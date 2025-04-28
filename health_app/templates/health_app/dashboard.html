@@ -26,7 +26,11 @@
     </div>
     
     <div class="text-end">
-        <a href="#" class="btn btn-primary">Edit Profile</a>
-        <a href="{% url 'logout' %}" class="btn btn-secondary">Logout</a>
+        <a href="{% url 'profile' %}" class="btn btn-primary">View Profile</a>
+        <a href="{% url 'profile_edit' %}" class="btn btn-outline-primary">Edit Profile</a>
+        <form method="post" action="{% url 'logout' %}" class="d-inline">
+            {% csrf_token %}
+            <button type="submit" class="btn btn-secondary">Logout</button>
+        </form>
     </div>
 {% endblock %}

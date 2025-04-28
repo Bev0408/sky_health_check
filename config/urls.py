@@ -21,8 +21,15 @@ from django.views.generic import RedirectView
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('', RedirectView.as_view(pattern_name='dashboard', permanent=False)),
     path('', include('health_app.urls')),
+    
+    # Authentication URLs
     path('login/', auth_views.LoginView.as_view(template_name='health_app/login.html'), name='login'),
     path('logout/', auth_views.LogoutView.as_view(), name='logout'),
+    
+    # Redirect /accounts/login/ to /login/ for compatibility
+    path('accounts/login/', RedirectView.as_view(url='/login/', permanent=True)),
+    
+    # Include other accounts URLs for fallback
+    path('accounts/', include('django.contrib.auth.urls')),
 ]
