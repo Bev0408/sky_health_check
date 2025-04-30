@@ -1,0 +1,244 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Health Check Results - {{ session.health_check.name }}{% endblock %}
+
+{% block extra_css %}
+<style>
+    .response-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+        gap: 1rem;
+    }
+    
+    .response-card {
+        border-radius: 0.5rem;
+        box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        transition: transform 0.3s ease;
+    }
+    
+    .response-card:hover {
+        transform: translateY(-3px);
+    }
+    
+    .response-red {
+        border-left: 5px solid #dc3545;
+    }
+    
+    .response-yellow {
+        border-left: 5px solid #ffc107;
+    }
+    
+    .response-green {
+        border-left: 5px solid #28a745;
+    }
+    
+    .category-header {
+        background-color: #f8f9fa;
+        padding: 1rem;
+        margin-bottom: 1rem;
+        border-radius: 0.5rem;
+        border-left: 5px solid #6c757d;
+    }
+    
+    .category-header h3 {
+        margin-bottom: 0.25rem;
+    }
+    
+    .results-summary {
+        display: flex;
+        gap: 1rem;
+        margin-bottom: 1.5rem;
+    }
+    
+    .result-box {
+        flex: 1;
+        padding: 1rem;
+        border-radius: 0.5rem;
+        text-align: center;
+    }
+    
+    .result-box.red {
+        background-color: rgba(220, 53, 69, 0.1);
+        border: 1px solid #dc3545;
+    }
+    
+    .result-box.yellow {
+        background-color: rgba(255, 193, 7, 0.1);
+        border: 1px solid #ffc107;
+    }
+    
+    .result-box.green {
+        background-color: rgba(40, 167, 69, 0.1);
+        border: 1px solid #28a745;
+    }
+    
+    .result-value {
+        font-size: 2rem;
+        font-weight: bold;
+    }
+    
+    .comment-text {
+        font-style: italic;
+        color: #6c757d;
+    }
+    
+    .anonymous {
+        font-style: italic;
+        color: #6c757d;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <h1>{{ session.health_check.name }} - Results</h1>
+            <p class="lead">{{ session.team.name }} - {{ session.start_date|date:"M d, Y" }}</p>
+        </div>
+        <a href="{% url 'session_detail' pk=session.pk %}" class="btn btn-outline-primary">
+            <i class="fas fa-arrow-left me-1"></i> Back to Session
+        </a>
+    </div>
+    
+    <!-- Results Summary -->
+    <div class="card mb-4 shadow-sm">
+        <div class="card-header">
+            <h3 class="mb-0">Overall Results</h3>
+        </div>
+        <div class="card-body">
+            <div class="results-summary">
+                <div class="result-box red">
+                    <div class="result-value">{{ results.red_percentage }}%</div>
+                    <div>Red Responses</div>
+                </div>
+                <div class="result-box yellow">
+                    <div class="result-value">{{ results.yellow_percentage }}%</div>
+                    <div>Yellow Responses</div>
+                </div>
+                <div class="result-box green">
+                    <div class="result-value">{{ results.green_percentage }}%</div>
+                    <div>Green Responses</div>
+                </div>
+            </div>
+            <div class="progress" style="height: 30px;">
+                <div class="progress-bar bg-danger" role="progressbar" style="width: {{ results.red_percentage }}%" 
+                     aria-valuenow="{{ results.red_percentage }}" aria-valuemin="0" aria-valuemax="100">
+                    {{ results.red_percentage }}% Red
+                </div>
+                <div class="progress-bar bg-warning" role="progressbar" style="width: {{ results.yellow_percentage }}%" 
+                     aria-valuenow="{{ results.yellow_percentage }}" aria-valuemin="0" aria-valuemax="100">
+                    {{ results.yellow_percentage }}% Yellow
+                </div>
+                <div class="progress-bar bg-success" role="progressbar" style="width: {{ results.green_percentage }}%" 
+                     aria-valuenow="{{ results.green_percentage }}" aria-valuemin="0" aria-valuemax="100">
+                    {{ results.green_percentage }}% Green
+                </div>
+            </div>
+            <div class="mt-3">
+                <p><strong>Total Responses:</strong> {{ results.total_responses }}</p>
+                <p><strong>Participation Rate:</strong> {{ results.participation_rate }}%</p>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Results by Category -->
+    {% for category, questions in categorized_responses.items %}
+    <div class="category-header" style="border-left-color: {{ category.color }};">
+        <h3>
+            {% if category.icon %}<i class="fas {{ category.icon }} me-2"></i>{% endif %}
+            {{ category.name }}
+        </h3>
+        <p class="mb-0">{{ category.description }}</p>
+    </div>
+    
+    {% for question, responses in questions.items %}
+    <div class="card mb-4">
+        <div class="card-header d-flex justify-content-between align-items-center">
+            <h5 class="mb-0">{{ question.question_text }}</h5>
+            
+            <!-- Status Counts -->
+            <div>
+                <!-- Calculate the counts directly via individual loops -->
+                {% with red_count=0 %}
+                    {% for response in responses %}
+                        {% if response.status == 'red' %}
+                            {% with red_count=red_count|add:1 %}
+                            {% if forloop.last %}
+                                <span class="badge rounded-pill bg-danger">{{ red_count }}</span>
+                            {% endif %}
+                            {% endwith %}
+                        {% elif forloop.last and red_count == 0 %}
+                            <span class="badge rounded-pill bg-danger">0</span>
+                        {% endif %}
+                    {% empty %}
+                        <span class="badge rounded-pill bg-danger">0</span>
+                    {% endfor %}
+                {% endwith %}
+                
+                {% with yellow_count=0 %}
+                    {% for response in responses %}
+                        {% if response.status == 'yellow' %}
+                            {% with yellow_count=yellow_count|add:1 %}
+                            {% if forloop.last %}
+                                <span class="badge rounded-pill bg-warning">{{ yellow_count }}</span>
+                            {% endif %}
+                            {% endwith %}
+                        {% elif forloop.last and yellow_count == 0 %}
+                            <span class="badge rounded-pill bg-warning">0</span>
+                        {% endif %}
+                    {% empty %}
+                        <span class="badge rounded-pill bg-warning">0</span>
+                    {% endfor %}
+                {% endwith %}
+                
+                {% with green_count=0 %}
+                    {% for response in responses %}
+                        {% if response.status == 'green' %}
+                            {% with green_count=green_count|add:1 %}
+                            {% if forloop.last %}
+                                <span class="badge rounded-pill bg-success">{{ green_count }}</span>
+                            {% endif %}
+                            {% endwith %}
+                        {% elif forloop.last and green_count == 0 %}
+                            <span class="badge rounded-pill bg-success">0</span>
+                        {% endif %}
+                    {% empty %}
+                        <span class="badge rounded-pill bg-success">0</span>
+                    {% endfor %}
+                {% endwith %}
+            </div>
+        </div>
+        <div class="card-body">
+            <div class="response-grid">
+                {% for response in responses %}
+                <div class="card response-card response-{{ response.status_color }}">
+                    <div class="card-body">
+                        <h6 class="card-title">
+                            <span class="badge bg-{{ response.status_color }}">{{ response.status_label }}</span>
+                            {% if show_anonymous and response.user %}
+                            <span class="float-end">{{ response.user.username }}</span>
+                            {% elif not session.anonymous %}
+                            <span class="float-end anonymous">Anonymous</span>
+                            {% endif %}
+                        </h6>
+                        {% if response.comment %}
+                        <p class="card-text comment-text">"{{ response.comment }}"</p>
+                        {% else %}
+                        <p class="card-text comment-text text-muted">No comment provided</p>
+                        {% endif %}
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+    {% endfor %}
+    {% empty %}
+    <div class="alert alert-info">
+        No responses have been recorded for this health check session yet.
+    </div>
+    {% endfor %}
+</div>
+{% endblock %}

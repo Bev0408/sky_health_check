@@ -1,0 +1,90 @@
+{% extends 'base.html' %}
+{% load crispy_forms_tags %}
+
+{% block title %}{% if session %}Edit Health Check Session{% else %}Create Health Check Session{% endif %}{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-8">
+        <div class="card">
+            <div class="card-header bg-primary text-white">
+                <h5 class="card-title mb-0">{% if session %}Edit Health Check Session{% else %}Create New Health Check Session{% endif %}</h5>
+            </div>
+            <div class="card-body">
+                <form method="post">
+                    {% csrf_token %}
+                    {{ form|crispy }}
+                    
+                    <div class="alert alert-info">
+                        <h6 class="alert-heading"><i class="fas fa-info-circle me-2"></i> About Health Check Sessions</h6>
+                        <p class="mb-0">
+                            Health check sessions allow team members to respond to health check questions. 
+                            Set a start and end date to define when responses can be submitted.
+                        </p>
+                    </div>
+                    
+                    <div class="d-flex justify-content-between mt-4">
+                        <a href="{% url 'dashboard' %}" class="btn btn-outline-secondary">
+                            <i class="fas fa-arrow-left me-2"></i> Cancel
+                        </a>
+                        <button type="submit" class="btn btn-primary">
+                            <i class="fas fa-save me-2"></i> {% if session %}Update Session{% else %}Create Session{% endif %}
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Handle showing/hiding participant selection based on anonymous toggle
+        const anonymousField = document.querySelector('#id_anonymous');
+        const participantsField = document.querySelector('#div_id_participants');
+        
+        function toggleParticipants() {
+            if (anonymousField.checked) {
+                participantsField.style.display = 'none';
+            } else {
+                participantsField.style.display = 'block';
+            }
+        }
+        
+        // Initial check
+        toggleParticipants();
+        
+        // Add event listener for changes
+        anonymousField.addEventListener('change', toggleParticipants);
+        
+        // Handle team change to update available participants
+        const teamField = document.querySelector('#id_team');
+        
+        teamField.addEventListener('change', function() {
+            const teamId = this.value;
+            
+            if (teamId) {
+                // Make request to get team members
+                fetch(`/health-checks/api/team-members/${teamId}/`)
+                    .then(response => response.json())
+                    .then(data => {
+                        const participantsSelect = document.querySelector('#id_participants');
+                        // Clear existing options
+                        participantsSelect.innerHTML = '';
+                        
+                        // Add new options
+                        data.forEach(member => {
+                            const option = document.createElement('option');
+                            option.value = member.id;
+                            option.textContent = member.name;
+                            participantsSelect.appendChild(option);
+                        });
+                    })
+                    .catch(error => console.error('Error fetching team members:', error));
+            }
+        });
+    });
+</script>
+{% endblock %}

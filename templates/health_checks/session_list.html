@@ -1,0 +1,179 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Health Check Sessions{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-12">
+            <h1 class="page-title">Health Check Sessions</h1>
+            
+            <!-- Filters -->
+            <div class="card mb-4">
+                <div class="card-header">
+                    <h5 class="mb-0">Filters</h5>
+                </div>
+                <div class="card-body">
+                    <form method="get" class="row g-3">
+                        <div class="col-md-3">
+                            <label for="team" class="form-label">Team</label>
+                            <select class="form-select" id="team" name="team">
+                                <option value="">All Teams</option>
+                                {% for team in teams %}
+                                <option value="{{ team.id }}" {% if selected_team == team.id %}selected{% endif %}>{{ team.name }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        <div class="col-md-3">
+                            <label for="status" class="form-label">Status</label>
+                            <select class="form-select" id="status" name="status">
+                                <option value="">All Statuses</option>
+                                <option value="active" {% if selected_status == 'active' %}selected{% endif %}>Active</option>
+                                <option value="upcoming" {% if selected_status == 'upcoming' %}selected{% endif %}>Upcoming</option>
+                                <option value="past" {% if selected_status == 'past' %}selected{% endif %}>Past</option>
+                            </select>
+                        </div>
+                        <div class="col-md-4">
+                            <label for="search" class="form-label">Search</label>
+                            <input type="text" class="form-control" id="search" name="search" value="{{ search_query }}" placeholder="Search by name...">
+                        </div>
+                        <div class="col-md-2 d-flex align-items-end">
+                            <button type="submit" class="btn btn-primary w-100">Apply Filters</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+            
+            <!-- Sessions List -->
+            <div class="card">
+                <div class="card-header d-flex justify-content-between align-items-center">
+                    <h5 class="mb-0">Health Check Sessions</h5>
+                    <a href="{% url 'health_checks:create_session' %}" class="btn btn-success btn-sm">
+                        <i class="fas fa-plus"></i> New Session
+                    </a>
+                </div>
+                <div class="card-body">
+                    {% if sessions %}
+                    <div class="table-responsive">
+                        <table class="table table-striped table-hover">
+                            <thead>
+                                <tr>
+                                    <th>Health Check</th>
+                                    <th>Team</th>
+                                    <th>Period</th>
+                                    <th>Status</th>
+                                    <th>Completion</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for session in sessions %}
+                                <tr>
+                                    <td>{{ session.health_check.name }}</td>
+                                    <td>{{ session.team.name }}</td>
+                                    <td>{{ session.start_date|date:"M d, Y" }} - {{ session.end_date|date:"M d, Y" }}</td>
+                                    <td>
+                                        {% if session.is_active %}
+                                        <span class="badge bg-success">Active</span>
+                                        {% elif session.is_upcoming %}
+                                        <span class="badge bg-info">Upcoming</span>
+                                        {% else %}
+                                        <span class="badge bg-secondary">Past</span>
+                                        {% endif %}
+                                    </td>
+                                    <td>
+                                        <div class="progress" style="height: 10px;">
+                                            {% with completion=session.get_completion_percentage %}
+                                            <div class="progress-bar {% if completion < 30 %}bg-danger{% elif completion < 70 %}bg-warning{% else %}bg-success{% endif %}" 
+                                                role="progressbar" style="width: {{ completion }}%;" 
+                                                aria-valuenow="{{ completion }}" aria-valuemin="0" aria-valuemax="100">
+                                            </div>
+                                            {% endwith %}
+                                        </div>
+                                        <small>{{ session.get_completion_percentage }}% completed</small>
+                                    </td>
+                                    <td>
+                                        <div class="btn-group">
+                                            <a href="{% url 'health_checks:session_detail' session.id %}" class="btn btn-sm btn-outline-primary">
+                                                <i class="fas fa-eye"></i>
+                                            </a>
+                                            {% if session.is_active and request.user in session.participants.all %}
+                                            <a href="{% url 'health_checks:respond' session.id %}" class="btn btn-sm btn-outline-success">
+                                                <i class="fas fa-check-circle"></i> Respond
+                                            </a>
+                                            {% endif %}
+                                            {% if request.user == session.created_by or request.user.is_admin or request.user.is_senior_manager %}
+                                            <a href="{% url 'health_checks:edit_session' session.id %}" class="btn btn-sm btn-outline-secondary">
+                                                <i class="fas fa-edit"></i>
+                                            </a>
+                                            {% endif %}
+                                        </div>
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                    
+                    <!-- Pagination -->
+                    {% if sessions.paginator.num_pages > 1 %}
+                    <nav aria-label="Page navigation" class="mt-4">
+                        <ul class="pagination justify-content-center">
+                            {% if sessions.has_previous %}
+                            <li class="page-item">
+                                <a class="page-link" href="?page=1{% if selected_team %}&team={{ selected_team }}{% endif %}{% if selected_status %}&status={{ selected_status }}{% endif %}{% if search_query %}&search={{ search_query }}{% endif %}" aria-label="First">
+                                    <span aria-hidden="true">&laquo;&laquo;</span>
+                                </a>
+                            </li>
+                            <li class="page-item">
+                                <a class="page-link" href="?page={{ sessions.previous_page_number }}{% if selected_team %}&team={{ selected_team }}{% endif %}{% if selected_status %}&status={{ selected_status }}{% endif %}{% if search_query %}&search={{ search_query }}{% endif %}" aria-label="Previous">
+                                    <span aria-hidden="true">&laquo;</span>
+                                </a>
+                            </li>
+                            {% endif %}
+                            
+                            {% for num in sessions.paginator.page_range %}
+                                {% if sessions.number == num %}
+                                <li class="page-item active">
+                                    <span class="page-link">{{ num }}</span>
+                                </li>
+                                {% elif num > sessions.number|add:'-3' and num < sessions.number|add:'3' %}
+                                <li class="page-item">
+                                    <a class="page-link" href="?page={{ num }}{% if selected_team %}&team={{ selected_team }}{% endif %}{% if selected_status %}&status={{ selected_status }}{% endif %}{% if search_query %}&search={{ search_query }}{% endif %}">{{ num }}</a>
+                                </li>
+                                {% endif %}
+                            {% endfor %}
+                            
+                            {% if sessions.has_next %}
+                            <li class="page-item">
+                                <a class="page-link" href="?page={{ sessions.next_page_number }}{% if selected_team %}&team={{ selected_team }}{% endif %}{% if selected_status %}&status={{ selected_status }}{% endif %}{% if search_query %}&search={{ search_query }}{% endif %}" aria-label="Next">
+                                    <span aria-hidden="true">&raquo;</span>
+                                </a>
+                            </li>
+                            <li class="page-item">
+                                <a class="page-link" href="?page={{ sessions.paginator.num_pages }}{% if selected_team %}&team={{ selected_team }}{% endif %}{% if selected_status %}&status={{ selected_status }}{% endif %}{% if search_query %}&search={{ search_query }}{% endif %}" aria-label="Last">
+                                    <span aria-hidden="true">&raquo;&raquo;</span>
+                                </a>
+                            </li>
+                            {% endif %}
+                        </ul>
+                    </nav>
+                    {% endif %}
+                    
+                    {% else %}
+                    <div class="alert alert-info">
+                        No health check sessions found. 
+                        {% if not selected_team and not selected_status and not search_query %}
+                        <a href="{% url 'health_checks:create_session' %}" class="alert-link">Create one now</a>.
+                        {% else %}
+                        Try adjusting your filters.
+                        {% endif %}
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

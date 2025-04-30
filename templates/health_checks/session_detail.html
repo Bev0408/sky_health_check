@@ -1,0 +1,162 @@
+{% extends 'base.html' %}
+
+{% block title %}Health Check Session: {{ session.health_check.name }} - {{ session.team.name }}{% endblock %}
+
+{% block content %}
+<div class="row mb-4">
+    <div class="col-md-8">
+        <h1>Health Check Session</h1>
+        <p class="text-muted">{{ session.health_check.name }} - {{ session.team.name }}</p>
+    </div>
+    <div class="col-md-4 text-end">
+        {% if is_active and user_is_participant %}
+        <a href="{% url 'participate_session' session.id %}" class="btn btn-primary">
+            <i class="fas fa-comment-dots me-2"></i> Participate
+        </a>
+        {% endif %}
+        {% if show_results %}
+        <a href="{% url 'session_results' session.id %}" class="btn btn-primary">
+            <i class="fas fa-chart-bar me-2"></i> View Results
+        </a>
+        {% endif %}
+    </div>
+</div>
+
+{% if messages %}
+<div class="row">
+    <div class="col-12">
+        {% for message in messages %}
+        <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+            {{ message }}
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+{% endif %}
+
+<div class="row">
+    <div class="col-md-8">
+        <div class="card mb-4">
+            <div class="card-header">
+                <h5 class="mb-0">Session Information</h5>
+            </div>
+            <div class="card-body">
+                <div class="row mb-3">
+                    <div class="col-md-4 text-muted">Team:</div>
+                    <div class="col-md-8"><a href="{% url 'team_detail' session.team.id %}">{{ session.team.name }}</a></div>
+                </div>
+                <div class="row mb-3">
+                    <div class="col-md-4 text-muted">Health Check:</div>
+                    <div class="col-md-8"><a href="{% url 'health_check_detail' session.health_check.id %}">{{ session.health_check.name }}</a></div>
+                </div>
+                <div class="row mb-3">
+                    <div class="col-md-4 text-muted">Created by:</div>
+                    <div class="col-md-8">{{ session.created_by.full_name }}</div>
+                </div>
+                <div class="row mb-3">
+                    <div class="col-md-4 text-muted">Date:</div>
+                    <div class="col-md-8">{{ session.start_date|date:"F j, Y" }}</div>
+                </div>
+                <div class="row mb-3">
+                    <div class="col-md-4 text-muted">Status:</div>
+                    <div class="col-md-8">
+                        {% if is_active %}
+                        <span class="badge bg-success">Active</span>
+                        {% else %}
+                        <span class="badge bg-secondary">Completed</span>
+                        {% endif %}
+                    </div>
+                </div>
+                <div class="row mb-3">
+                    <div class="col-md-4 text-muted">Description:</div>
+                    <div class="col-md-8">{{ session.description|default:"No description provided"|linebreaks }}</div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-4">
+        <div class="card mb-4">
+            <div class="card-header">
+                <h5 class="mb-0">Participants</h5>
+            </div>
+            <div class="card-body">
+                <ul class="list-group">
+                    {% for status in participant_statuses %}
+                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                        {{ status.participant.full_name }}
+                        {% if status.completed %}
+                        <span class="badge bg-success rounded-pill">
+                            <i class="fas fa-check"></i> Completed
+                        </span>
+                        {% else %}
+                        <span class="badge bg-warning rounded-pill">
+                            <i class="fas fa-hourglass-half"></i> Pending
+                        </span>
+                        {% endif %}
+                    </li>
+                    {% empty %}
+                    <li class="list-group-item">No participants assigned</li>
+                    {% endfor %}
+                </ul>
+            </div>
+        </div>
+        
+        {% if show_results %}
+        <div class="card">
+            <div class="card-header">
+                <h5 class="mb-0">Summary</h5>
+            </div>
+            <div class="card-body">
+                <div class="text-center mb-3">
+                    <div class="d-flex justify-content-between mb-2">
+                        <span class="text-success">
+                            <i class="fas fa-smile"></i> Good
+                        </span>
+                        <span class="text-warning">
+                            <i class="fas fa-meh"></i> Neutral
+                        </span>
+                        <span class="text-danger">
+                            <i class="fas fa-frown"></i> Concern
+                        </span>
+                    </div>
+                    <div class="progress">
+                        <div class="progress-bar bg-success" 
+                            role="progressbar" 
+                            style="width: {{ results.overall.green_percentage }}%" 
+                            aria-valuenow="{{ results.overall.green_percentage }}" 
+                            aria-valuemin="0" 
+                            aria-valuemax="100">
+                            {{ results.overall.green_percentage }}%
+                        </div>
+                        <div class="progress-bar bg-warning" 
+                            role="progressbar" 
+                            style="width: {{ results.overall.yellow_percentage }}%" 
+                            aria-valuenow="{{ results.overall.yellow_percentage }}" 
+                            aria-valuemin="0" 
+                            aria-valuemax="100">
+                            {{ results.overall.yellow_percentage }}%
+                        </div>
+                        <div class="progress-bar bg-danger" 
+                            role="progressbar" 
+                            style="width: {{ results.overall.red_percentage }}%" 
+                            aria-valuenow="{{ results.overall.red_percentage }}" 
+                            aria-valuemin="0" 
+                            aria-valuemax="100">
+                            {{ results.overall.red_percentage }}%
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="text-center">
+                    <a href="{% url 'session_results' session.id %}" class="btn btn-primary btn-sm">
+                        View Detailed Results
+                    </a>
+                </div>
+            </div>
+        </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

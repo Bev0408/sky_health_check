@@ -1,0 +1,102 @@
+{% extends 'base.html' %}
+
+{# 
+File: profile.html
+Author: Beveridge Ekpolomo
+Description: User profile display template with user information and action links.
+Part of the User Authentication & Profiles module.
+#}
+
+{% block title %}Your Profile - University Dashboard{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-lg-8 offset-lg-2">
+        <div class="card shadow">
+            <div class="card-header d-flex justify-content-between align-items-center">
+                <h3 class="mb-0">Your Profile</h3>
+                <a href="{% url 'edit_profile' %}" class="btn btn-primary">
+                    <i class="fas fa-edit me-1"></i> Edit Profile
+                </a>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-4 text-center mb-4 mb-md-0">
+                        <div class="profile-img-container">
+                            <i class="fas fa-user-circle fa-8x text-secondary"></i>
+                        </div>
+                        <h4 class="mt-3">{{ user.full_name }}</h4>
+                        <p class="badge bg-primary">{{ user.get_role_display }}</p>
+                    </div>
+                    <div class="col-md-8">
+                        <div class="table-responsive">
+                            <table class="table">
+                                <tbody>
+                                    <tr>
+                                        <th style="width: 30%">Username:</th>
+                                        <td>{{ user.username }}</td>
+                                    </tr>
+                                    <tr>
+                                        <th>Email:</th>
+                                        <td>{{ user.email }}</td>
+                                    </tr>
+                                    <tr>
+                                        <th>Department:</th>
+                                        <td>{{ user.department.name|default:"Not assigned" }}</td>
+                                    </tr>
+                                    <tr>
+                                        <th>Role:</th>
+                                        <td>{{ user.get_role_display }}</td>
+                                    </tr>
+                                    <tr>
+                                        <th>Account Created:</th>
+                                        <td>{{ user.date_joined|date:"F j, Y" }}</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Teams section -->
+        <div class="card shadow mt-4">
+            <div class="card-header">
+                <h4 class="mb-0">Your Teams</h4>
+            </div>
+            <div class="card-body">
+                {% if user.teams.exists %}
+                <div class="list-group">
+                    {% for team in user.teams.all %}
+                    <a href="{% url 'team_detail' pk=team.pk %}" class="list-group-item list-group-item-action">
+                        <div class="d-flex w-100 justify-content-between">
+                            <h5 class="mb-1">{{ team.name }}</h5>
+                            {% if team.get_leader == user %}
+                            <span class="badge bg-primary">Team Leader</span>
+                            {% endif %}
+                        </div>
+                        <p class="mb-1">{{ team.description|truncatechars:150 }}</p>
+                        <small class="text-muted">{{ team.members.count }} members • Department: {{ team.department.name }}</small>
+                    </a>
+                    {% endfor %}
+                </div>
+                {% else %}
+                <div class="alert alert-info">
+                    <i class="fas fa-info-circle me-2"></i> You are not a member of any team yet.
+                </div>
+                {% endif %}
+            </div>
+        </div>
+        
+        <div class="d-flex justify-content-between mt-4">
+            <a href="{% url 'dashboard' %}" class="btn btn-secondary">
+                <i class="fas fa-arrow-left me-1"></i> Back to Dashboard
+            </a>
+            <a href="{% url 'change_password' %}" class="btn btn-warning">
+                <i class="fas fa-key me-1"></i> Change Password
+            </a>
+        </div>
+    </div>
+</div>
+{% endblock %}

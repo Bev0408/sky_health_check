@@ -1,0 +1,283 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Analytics Dashboard - Health Check Application{% endblock %}
+
+{% block extra_css %}
+<style>
+    .card-metrics {
+        min-height: 150px;
+        text-align: center;
+    }
+    
+    .metric-value {
+        font-size: 2.5rem;
+        font-weight: 700;
+    }
+    
+    .status-box {
+        padding: 1rem;
+        border-radius: 0.5rem;
+        margin-bottom: 1rem;
+    }
+    
+    .table-teams .health-indicator {
+        width: 120px;
+    }
+    
+    .filter-section {
+        background-color: #f8f9fa;
+        border-radius: 0.5rem;
+        padding: 1.5rem;
+        margin-bottom: 2rem;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="analytics-dashboard">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1><i class="fas fa-chart-line me-2"></i> Analytics Dashboard</h1>
+        <div>
+            <div class="btn-group">
+                <a href="?period=30{% if selected_department %}&department={{ selected_department }}{% endif %}" class="btn btn-outline-secondary {% if period == 30 %}active{% endif %}">30 Days</a>
+                <a href="?period=90{% if selected_department %}&department={{ selected_department }}{% endif %}" class="btn btn-outline-secondary {% if period == 90 %}active{% endif %}">90 Days</a>
+                <a href="?period=180{% if selected_department %}&department={{ selected_department }}{% endif %}" class="btn btn-outline-secondary {% if period == 180 %}active{% endif %}">180 Days</a>
+                <a href="?period=365{% if selected_department %}&department={{ selected_department }}{% endif %}" class="btn btn-outline-secondary {% if period == 365 %}active{% endif %}">1 Year</a>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Department filter -->
+    {% if departments %}
+    <div class="filter-section mb-4">
+        <h5 class="mb-3">Filter by Department</h5>
+        <div class="row">
+            <div class="col-md-6">
+                <form method="get" class="d-flex">
+                    <input type="hidden" name="period" value="{{ period }}">
+                    <select name="department" class="form-select me-2">
+                        <option value="">All Departments</option>
+                        {% for dept in departments %}
+                        <option value="{{ dept.id }}" {% if selected_department == dept.id %}selected{% endif %}>{{ dept.name }}</option>
+                        {% endfor %}
+                    </select>
+                    <button type="submit" class="btn btn-primary">Apply</button>
+                </form>
+            </div>
+        </div>
+    </div>
+    {% endif %}
+    
+    <!-- Summary Metrics -->
+    <div class="row mb-4">
+        <div class="col-md-3">
+            <div class="card metric-card shadow-sm h-100">
+                <div class="card-body d-flex align-items-center justify-content-center">
+                    <div class="text-center">
+                        <div class="metric-value">{{ metrics.total_sessions }}</div>
+                        <div class="metric-label">Health Check Sessions</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card metric-card shadow-sm h-100">
+                <div class="card-body d-flex align-items-center justify-content-center">
+                    <div class="text-center">
+                        <div class="metric-value">{{ metrics.total_teams }}</div>
+                        <div class="metric-label">Teams</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card metric-card shadow-sm h-100">
+                <div class="card-body d-flex align-items-center justify-content-center">
+                    <div class="text-center">
+                        <div class="metric-value">{{ metrics.avg_participation_rate }}%</div>
+                        <div class="metric-label">Avg. Participation Rate</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card metric-card shadow-sm h-100">
+                <div class="card-body">
+                    <h6 class="text-center mb-3">Overall Health Status</h6>
+                    <div class="status-distribution">
+                        <div class="status-item red-bg">
+                            <div class="status-percentage">{{ metrics.red_percentage }}%</div>
+                            <div>Red</div>
+                        </div>
+                        <div class="status-item yellow-bg">
+                            <div class="status-percentage">{{ metrics.yellow_percentage }}%</div>
+                            <div>Yellow</div>
+                        </div>
+                        <div class="status-item green-bg">
+                            <div class="status-percentage">{{ metrics.green_percentage }}%</div>
+                            <div>Green</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Health Status Trend Chart -->
+    <div class="row mb-4">
+        <div class="col-lg-8">
+            <div class="card chart-card shadow-sm">
+                <div class="card-header">
+                    <h5 class="card-title mb-0">Health Status Trend</h5>
+                </div>
+                <div class="card-body">
+                    <div class="chart-container">
+                        <canvas id="trend-chart" 
+                                data-labels="{{ chart_data.trend_labels }}" 
+                                data-red="{{ chart_data.red_trend }}" 
+                                data-yellow="{{ chart_data.yellow_trend }}" 
+                                data-green="{{ chart_data.green_trend }}">
+                        </canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-4">
+            <div class="card chart-card shadow-sm">
+                <div class="card-header">
+                    <h5 class="card-title mb-0">Health by Category</h5>
+                </div>
+                <div class="card-body">
+                    <div class="chart-container">
+                        <canvas id="category-chart"
+                                data-categories="{{ chart_data.category_names }}"
+                                data-red="{{ chart_data.category_red }}"
+                                data-yellow="{{ chart_data.category_yellow }}"
+                                data-green="{{ chart_data.category_green }}">
+                        </canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Top Concerns -->
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="card shadow-sm">
+                <div class="card-header">
+                    <h5 class="card-title mb-0">Top Concerns</h5>
+                </div>
+                <div class="card-body">
+                    {% if top_concerns %}
+                    <div class="table-responsive">
+                        <table class="table table-hover">
+                            <thead>
+                                <tr>
+                                    <th>Question</th>
+                                    <th>Category</th>
+                                    <th>Red %</th>
+                                    <th>Responses</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for concern in top_concerns %}
+                                <tr>
+                                    <td>{{ concern.question_text }}</td>
+                                    <td>{{ concern.category_name }}</td>
+                                    <td>
+                                        <div class="d-flex align-items-center">
+                                            <div class="progress flex-grow-1 me-2" style="height: 10px;">
+                                                <div class="progress-bar bg-danger" role="progressbar" style="width: {{ concern.red_percentage }}%"></div>
+                                            </div>
+                                            <span>{{ concern.red_percentage }}%</span>
+                                        </div>
+                                    </td>
+                                    <td>{{ concern.total_responses }}</td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                    {% else %}
+                    <div class="alert alert-info">
+                        No concerns found in the selected time period.
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Team Performance -->
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="card shadow-sm">
+                <div class="card-header">
+                    <h5 class="card-title mb-0">Team Performance</h5>
+                </div>
+                <div class="card-body">
+                    {% if teams_data %}
+                    <div class="table-responsive">
+                        <table class="table table-hover table-teams">
+                            <thead>
+                                <tr>
+                                    <th>Team</th>
+                                    <th>Department</th>
+                                    <th>Sessions</th>
+                                    <th>Last Check</th>
+                                    <th>Health Status</th>
+                                    <th>Trend</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for team in teams_data %}
+                                <tr>
+                                    <td>
+                                        <a href="{% url 'team_detail' team.id %}">{{ team.name }}</a>
+                                    </td>
+                                    <td>{{ team.department_name }}</td>
+                                    <td>{{ team.sessions_count }}</td>
+                                    <td>{{ team.last_session_date }}</td>
+                                    <td class="health-indicator">
+                                        <div class="health-bars">
+                                            <div class="health-bar-red" style="width: {{ team.red_percentage }}%;"></div>
+                                            <div class="health-bar-yellow" style="width: {{ team.yellow_percentage }}%;"></div>
+                                            <div class="health-bar-green" style="width: {{ team.green_percentage }}%;"></div>
+                                        </div>
+                                        <div class="small mt-1">
+                                            <span class="status-red">{{ team.red_percentage }}%</span> / 
+                                            <span class="status-yellow">{{ team.yellow_percentage }}%</span> / 
+                                            <span class="status-green">{{ team.green_percentage }}%</span>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        {% if team.trend > 0 %}
+                                        <span class="trend-up"><i class="fas fa-arrow-up"></i> {{ team.trend }}%</span>
+                                        {% elif team.trend < 0 %}
+                                        <span class="trend-down"><i class="fas fa-arrow-down"></i> {% widthratio team.trend -1 1 %}%</span>
+                                        {% else %}
+                                        <span class="text-muted">No change</span>
+                                        {% endif %}
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                    {% else %}
+                    <div class="alert alert-info">
+                        No team data found in the selected time period.
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script src="{% static 'js/charts.js' %}"></script>
+{% endblock %}

@@ -1,0 +1,221 @@
+{% extends "base.html" %}
+
+{% block title %}SKY Health - Vote{% endblock %}
+
+{% block extra_css %}
+<style>
+    .question-card {
+        transition: all 0.3s ease;
+    }
+    
+    .question-card.answered {
+        border-left: 4px solid #28a745;
+    }
+    
+    .question-card.status-needs-attention {
+        border-left: 4px solid #dc3545;
+    }
+    
+    .question-card.status-room-for-improvement {
+        border-left: 4px solid #ffc107;
+    }
+    
+    .question-card.status-doing-well {
+        border-left: 4px solid #28a745;
+    }
+    
+    .status-option {
+        cursor: pointer;
+        transition: all 0.2s ease;
+        border: 1px solid #dee2e6;
+        border-radius: 4px;
+        padding: 12px;
+        margin-bottom: 10px;
+    }
+    
+    .status-option:hover {
+        background-color: #f8f9fa;
+    }
+    
+    .status-option.active {
+        font-weight: 500;
+    }
+    
+    .status-option input[type="radio"] {
+        position: absolute;
+        opacity: 0;
+    }
+    
+    .needs-attention-option.active {
+        background-color: #f8d7da;
+        border-color: #dc3545;
+        color: #721c24;
+    }
+    
+    .room-for-improvement-option.active {
+        background-color: #fff3cd;
+        border-color: #ffc107;
+        color: #856404;
+    }
+    
+    .doing-well-option.active {
+        background-color: #d4edda;
+        border-color: #28a745;
+        color: #155724;
+    }
+    
+    .completion-progress {
+        height: 8px;
+        background-color: #e9ecef;
+        border-radius: 4px;
+        overflow: hidden;
+        margin: 10px 0;
+    }
+    
+    .completion-bar {
+        height: 100%;
+        background-color: #007bff;
+    }
+    
+    .highlight-unanswered {
+        animation: highlight 1s ease;
+    }
+    
+    @keyframes highlight {
+        0% { transform: translateX(0); }
+        25% { transform: translateX(-10px); }
+        50% { transform: translateX(10px); }
+        75% { transform: translateX(-10px); }
+        100% { transform: translateX(0); }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <div>
+        <h1 class="h3 mb-0">{{ session.health_check.name }}</h1>
+        <p class="text-muted">Share your feedback on team health for the current sprint</p>
+    </div>
+    <div>
+        <button id="flag-issues-btn" class="btn btn-outline-secondary me-2">
+            <i class="fas fa-flag me-1"></i> Flag Issues
+        </button>
+        <button id="save-responses-btn" class="btn btn-primary">
+            <i class="fas fa-save me-1"></i> Save Responses
+        </button>
+    </div>
+</div>
+
+<div class="d-flex justify-content-between align-items-center mb-3">
+    <div>
+        <span class="text-muted" id="completion-text">0 of 0 completed</span>
+        <div class="completion-progress">
+            <div class="completion-bar" id="completion-progress" style="width: 0%"></div>
+        </div>
+    </div>
+    <div>
+        <ul class="nav nav-pills">
+            <li class="nav-item">
+                <a class="nav-link category-tab active" data-category="all" href="#">All</a>
+            </li>
+            {% for category in categories %}
+            <li class="nav-item">
+                <a class="nav-link category-tab" data-category="{{ category.id }}" href="#">{{ category.name }}</a>
+            </li>
+            {% endfor %}
+        </ul>
+    </div>
+</div>
+
+<form method="POST" action="{{ url_for('vote_health_check', id=session.id) }}" id="health-check-form">
+    {% for category in categories %}
+        {% for question in category.questions %}
+        <div class="question-card mb-4 p-4 bg-white rounded shadow-sm {% if question.id in existing_responses %}answered{% endif %}" 
+             data-category="{{ category.id }}" data-question-id="{{ question.id }}">
+            <div class="mb-2 text-muted small">{{ category.name }}</div>
+            <h2 class="h5 mb-3 fw-bold">{{ question.text }}</h2>
+            <p class="mb-4">{{ question.detail }}</p>
+            
+            <div class="mb-3">
+                <div class="mb-2">Your Vote</div>
+                
+                <input type="hidden" name="question_id" value="{{ question.id }}">
+                
+                <div class="status-option needs-attention-option {% if question.id in existing_responses and existing_responses[question.id].status == 'needs_attention' %}active{% endif %}">
+                    <input type="radio" name="status" value="needs_attention" class="status-radio" 
+                           id="status_{{ question.id }}_needs_attention" 
+                           {% if question.id in existing_responses and existing_responses[question.id].status == 'needs_attention' %}checked{% endif %}>
+                    <label for="status_{{ question.id }}_needs_attention" class="d-flex align-items-center">
+                        <div class="text-danger me-2">
+                            <i class="fas fa-exclamation-circle"></i>
+                        </div>
+                        <div>
+                            <strong>Needs Attention</strong>
+                            <div class="small text-muted">This area is significantly impacting the team negatively</div>
+                        </div>
+                    </label>
+                </div>
+                
+                <div class="status-option room-for-improvement-option {% if question.id in existing_responses and existing_responses[question.id].status == 'room_for_improvement' %}active{% endif %}">
+                    <input type="radio" name="status" value="room_for_improvement" class="status-radio" 
+                           id="status_{{ question.id }}_room_for_improvement" 
+                           {% if question.id in existing_responses and existing_responses[question.id].status == 'room_for_improvement' %}checked{% endif %}>
+                    <label for="status_{{ question.id }}_room_for_improvement" class="d-flex align-items-center">
+                        <div class="text-warning me-2">
+                            <i class="fas fa-exclamation-triangle"></i>
+                        </div>
+                        <div>
+                            <strong>Room for Improvement</strong>
+                            <div class="small text-muted">This area works but could be better</div>
+                        </div>
+                    </label>
+                </div>
+                
+                <div class="status-option doing-well-option {% if question.id in existing_responses and existing_responses[question.id].status == 'doing_well' %}active{% endif %}">
+                    <input type="radio" name="status" value="doing_well" class="status-radio" 
+                           id="status_{{ question.id }}_doing_well" 
+                           {% if question.id in existing_responses and existing_responses[question.id].status == 'doing_well' %}checked{% endif %}>
+                    <label for="status_{{ question.id }}_doing_well" class="d-flex align-items-center">
+                        <div class="text-success me-2">
+                            <i class="fas fa-check-circle"></i>
+                        </div>
+                        <div>
+                            <strong>Doing Well</strong>
+                            <div class="small text-muted">This area is working great for the team</div>
+                        </div>
+                    </label>
+                </div>
+            </div>
+            
+            <div class="mb-3">
+                <label for="comment_{{ question.id }}" class="form-label">Comments (Optional)</label>
+                <textarea name="comment" id="comment_{{ question.id }}" rows="3" class="form-control autosize" 
+                          placeholder="Add any additional comments or context for your vote...">{{ existing_responses[question.id].comment if question.id in existing_responses else '' }}</textarea>
+            </div>
+        </div>
+        {% endfor %}
+    {% endfor %}
+</form>
+
+<div class="text-center my-5">
+    <button id="save-responses-bottom-btn" class="btn btn-primary btn-lg px-5">
+        <i class="fas fa-save me-1"></i> Save All Responses
+    </button>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script src="{{ url_for('static', filename='js/health_check.js') }}"></script>
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Handle "Save Responses" button at the bottom
+        const saveResponsesBottomBtn = document.getElementById('save-responses-bottom-btn');
+        if (saveResponsesBottomBtn) {
+            saveResponsesBottomBtn.addEventListener('click', function() {
+                document.getElementById('save-responses-btn').click();
+            });
+        }
+    });
+</script>
+{% endblock %}

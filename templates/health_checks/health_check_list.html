@@ -1,0 +1,176 @@
+{% extends 'base.html' %}
+
+{% block title %}Health Checks{% endblock %}
+
+{% block content %}
+<div class="row mb-4">
+    <div class="col-md-8">
+        <h1>Health Checks</h1>
+        <p class="text-muted">Manage and conduct team health checks</p>
+    </div>
+    <div class="col-md-4 text-end">
+        {% if user.is_team_leader or user.is_department_leader or user.is_admin %}
+        <a href="{% url 'create_health_check' %}" class="btn btn-primary">
+            <i class="fas fa-plus me-1"></i> Create Health Check
+        </a>
+        {% endif %}
+        <a href="{% url 'session_list' %}" class="btn btn-outline-primary">
+            <i class="fas fa-history me-1"></i> View Sessions
+        </a>
+    </div>
+</div>
+
+<div class="row mb-4">
+    <div class="col-12">
+        <ul class="nav nav-tabs" id="healthCheckTabs" role="tablist">
+            <li class="nav-item" role="presentation">
+                <button class="nav-link active" id="all-tab" data-bs-toggle="tab" data-bs-target="#all" type="button" role="tab" aria-controls="all" aria-selected="true">
+                    All Health Checks
+                </button>
+            </li>
+            <li class="nav-item" role="presentation">
+                <button class="nav-link" id="templates-tab" data-bs-toggle="tab" data-bs-target="#templates" type="button" role="tab" aria-controls="templates" aria-selected="false">
+                    Templates
+                </button>
+            </li>
+            <li class="nav-item" role="presentation">
+                <button class="nav-link" id="custom-tab" data-bs-toggle="tab" data-bs-target="#custom" type="button" role="tab" aria-controls="custom" aria-selected="false">
+                    Custom Health Checks
+                </button>
+            </li>
+        </ul>
+    </div>
+</div>
+
+<div class="tab-content" id="healthCheckTabContent">
+    <div class="tab-pane fade show active" id="all" role="tabpanel" aria-labelledby="all-tab">
+        {% if health_checks %}
+        <div class="health-check-grid">
+            {% for health_check in health_checks %}
+            <div class="card health-check-card">
+                <div class="card-header d-flex justify-content-between align-items-center">
+                    <h5 class="card-title mb-0">{{ health_check.name }}</h5>
+                    {% if health_check.is_template %}
+                    <span class="badge bg-info">Template</span>
+                    {% endif %}
+                </div>
+                <div class="card-body">
+                    <p class="card-text">
+                        {% if health_check.description %}
+                        {{ health_check.description|truncatechars:100 }}
+                        {% else %}
+                        <span class="text-muted">No description available</span>
+                        {% endif %}
+                    </p>
+                    <p class="card-text">
+                        <small class="text-muted">
+                            Created by {{ health_check.created_by.full_name|default:health_check.created_by.username }} on {{ health_check.created_at|date:"M d, Y" }}
+                        </small>
+                    </p>
+                </div>
+                <div class="card-footer bg-transparent">
+                    <a href="{% url 'health_check_detail' health_check.id %}" class="btn btn-sm btn-outline-primary">
+                        <i class="fas fa-eye me-1"></i> View Details
+                    </a>
+                    <a href="{% url 'create_session' %}?health_check={{ health_check.id }}" class="btn btn-sm btn-success">
+                        <i class="fas fa-play me-1"></i> Start Session
+                    </a>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        {% else %}
+        <div class="alert alert-info">
+            <i class="fas fa-info-circle me-2"></i> No health checks found. 
+            {% if user.is_team_leader or user.is_department_leader or user.is_admin %}
+            <a href="{% url 'create_health_check' %}" class="alert-link">Create your first health check</a>.
+            {% endif %}
+        </div>
+        {% endif %}
+    </div>
+    
+    <div class="tab-pane fade" id="templates" role="tabpanel" aria-labelledby="templates-tab">
+        {% if templates %}
+        <div class="health-check-grid">
+            {% for health_check in templates %}
+            <div class="card health-check-card">
+                <div class="card-header d-flex justify-content-between align-items-center">
+                    <h5 class="card-title mb-0">{{ health_check.name }}</h5>
+                    <span class="badge bg-info">Template</span>
+                </div>
+                <div class="card-body">
+                    <p class="card-text">
+                        {% if health_check.description %}
+                        {{ health_check.description|truncatechars:100 }}
+                        {% else %}
+                        <span class="text-muted">No description available</span>
+                        {% endif %}
+                    </p>
+                    <p class="card-text">
+                        <small class="text-muted">
+                            Created by {{ health_check.created_by.full_name|default:health_check.created_by.username }} on {{ health_check.created_at|date:"M d, Y" }}
+                        </small>
+                    </p>
+                </div>
+                <div class="card-footer bg-transparent">
+                    <a href="{% url 'health_check_detail' health_check.id %}" class="btn btn-sm btn-outline-primary">
+                        <i class="fas fa-eye me-1"></i> View Details
+                    </a>
+                    <a href="{% url 'create_session' %}?health_check={{ health_check.id }}" class="btn btn-sm btn-success">
+                        <i class="fas fa-play me-1"></i> Start Session
+                    </a>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        {% else %}
+        <div class="alert alert-info">
+            <i class="fas fa-info-circle me-2"></i> No template health checks found.
+        </div>
+        {% endif %}
+    </div>
+    
+    <div class="tab-pane fade" id="custom" role="tabpanel" aria-labelledby="custom-tab">
+        {% if custom_health_checks %}
+        <div class="health-check-grid">
+            {% for health_check in custom_health_checks %}
+            <div class="card health-check-card">
+                <div class="card-header">
+                    <h5 class="card-title mb-0">{{ health_check.name }}</h5>
+                </div>
+                <div class="card-body">
+                    <p class="card-text">
+                        {% if health_check.description %}
+                        {{ health_check.description|truncatechars:100 }}
+                        {% else %}
+                        <span class="text-muted">No description available</span>
+                        {% endif %}
+                    </p>
+                    <p class="card-text">
+                        <small class="text-muted">
+                            Created by {{ health_check.created_by.full_name|default:health_check.created_by.username }} on {{ health_check.created_at|date:"M d, Y" }}
+                        </small>
+                    </p>
+                </div>
+                <div class="card-footer bg-transparent">
+                    <a href="{% url 'health_check_detail' health_check.id %}" class="btn btn-sm btn-outline-primary">
+                        <i class="fas fa-eye me-1"></i> View Details
+                    </a>
+                    <a href="{% url 'create_session' %}?health_check={{ health_check.id }}" class="btn btn-sm btn-success">
+                        <i class="fas fa-play me-1"></i> Start Session
+                    </a>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        {% else %}
+        <div class="alert alert-info">
+            <i class="fas fa-info-circle me-2"></i> No custom health checks found.
+            {% if user.is_team_leader or user.is_department_leader or user.is_admin %}
+            <a href="{% url 'create_health_check' %}" class="alert-link">Create your first custom health check</a>.
+            {% endif %}
+        </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

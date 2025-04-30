@@ -1,0 +1,646 @@
+==========================================================
+HEALTH CHECK APPLICATION - COMPREHENSIVE PROJECT DOCUMENTATION
+==========================================================
+
+Table of Contents
+----------------
+1. Project Overview
+2. Technology Stack
+3. Project Structure
+4. Database Models and Relations
+5. Authentication System
+6. Application Components
+   6.1. Accounts App
+   6.2. Departments App
+   6.3. Teams App
+   6.4. Health Checks App
+   6.5. Analytics App
+7. Templates Structure
+8. Static Files
+9. URL Patterns
+10. Data Flow and Business Logic
+11. Security Considerations
+12. Deployment Instructions
+13. Data Generation Scripts
+14. Testing
+
+==========================================================
+1. PROJECT OVERVIEW
+==========================================================
+
+The Health Check Application is a comprehensive web-based system designed to facilitate software team health checks using the Spotify Health Check methodology. It enables teams to assess various aspects of their work environment, processes, and collaboration through structured questionnaires and provides advanced analytics to track improvements over time.
+
+Key Features:
+- Role-based access control with five distinct user roles
+- Department and team management
+- Customizable health check templates
+- Anonymous health check responses
+- Advanced analytics and reporting
+- Historical data tracking and trend analysis
+- Interactive visualizations
+
+Primary Use Cases:
+- Team leaders conducting regular health checks with their teams
+- Department leaders reviewing health metrics across multiple teams
+- Engineers participating in health checks
+- Administrators managing the overall system
+- Senior managers reviewing organization-wide health metrics
+
+==========================================================
+2. TECHNOLOGY STACK
+==========================================================
+
+Backend:
+- Django 5.2: Python web framework for rapid development
+- PostgreSQL: Relational database for data storage
+- Gunicorn: WSGI HTTP Server for running Django applications
+
+Frontend:
+- Bootstrap 5: CSS framework for responsive design
+- Charts.js: JavaScript library for data visualization
+- HTML5/CSS3/JavaScript: Standard web technologies
+
+Authentication:
+- Django's built-in authentication system with custom user model
+- Role-based access control implemented with custom middleware
+
+Deployment:
+- Replit: Cloud development environment
+- WhiteNoise: Static file serving for production
+
+Development Tools:
+- Git: Version control
+- VSCode: Recommended IDE
+- Django Debug Toolbar (development only)
+
+==========================================================
+3. PROJECT STRUCTURE
+==========================================================
+
+The project follows Django's recommended structure with modular apps for different features:
+
+/health_check_project/
+├── accounts/               # User authentication and profile management
+├── analytics/              # Data visualization and reporting
+├── departments/            # Department management
+├── health_checks/          # Health check templates, sessions, and responses
+├── health_check_project/   # Main project settings and configuration
+├── static/                 # Static files (CSS, JS, images)
+├── teams/                  # Team management
+├── templates/              # HTML templates
+├── manage.py               # Django management script
+├── main.py                 # Entry point for web server
+└── generate_*.py           # Data generation scripts
+
+Each app contains standard Django components:
+- models.py: Database models
+- views.py: View functions/classes
+- urls.py: URL routing
+- forms.py: Form classes
+- admin.py: Admin interface configuration
+- templates/app_name/: App-specific templates
+
+==========================================================
+4. DATABASE MODELS AND RELATIONS
+==========================================================
+
+The application uses several interconnected models that form the database schema:
+
+accounts.User:
+- Custom User model extending Django's AbstractUser
+- Fields: username, email, full_name, role, department (FK), etc.
+- Role choices: ENGINEER, TEAM_LEADER, DEPARTMENT_LEADER, SENIOR_MANAGER, ADMIN
+
+departments.Department:
+- Fields: name, description, created_at
+- Relations: users (reverse FK from User), teams (reverse FK from Team)
+
+teams.Team:
+- Fields: name, description, department (FK), created_at
+- Relations: members (M2M through TeamMember)
+
+teams.TeamMember:
+- Fields: team (FK), user (FK), is_leader (Boolean), joined_at
+- Junction table for Team-User many-to-many relationship
+
+health_checks.HealthCheckCategory:
+- Fields: name, description, order
+- Relations: questions (reverse FK from HealthCheckQuestion)
+
+health_checks.HealthCheckQuestion:
+- Fields: text, detail, category (FK), order
+- Relations: responses (reverse FK from HealthCheckResponse)
+
+health_checks.HealthCheck:
+- Fields: name, description, is_template, created_by (FK), created_at
+- Relations: sessions (reverse FK from HealthCheckSession)
+
+health_checks.HealthCheckSession:
+- Fields: health_check (FK), team (FK), start_date, end_date, anonymous, created_by (FK), created_at
+- Relations: participants (M2M to User), responses (reverse FK from HealthCheckResponse)
+
+health_checks.HealthCheckResponse:
+- Fields: session (FK), question (FK), user (FK), status, comment, created_at
+- Status choices: NEEDS_ATTENTION, ROOM_FOR_IMPROVEMENT, DOING_WELL
+
+Key Relationships:
+- Users belong to Departments
+- Teams belong to Departments
+- Users can be members of multiple Teams through TeamMember
+- HealthCheckSessions are created for specific Teams using HealthCheck templates
+- Users respond to Questions in Sessions, producing HealthCheckResponses
+
+==========================================================
+5. AUTHENTICATION SYSTEM
+==========================================================
+
+Authentication is handled through Django's built-in authentication system with a custom User model.
+
+User Roles and Permissions:
+- ENGINEER: Can participate in health checks for their teams
+- TEAM_LEADER: Can create and manage health checks for their teams
+- DEPARTMENT_LEADER: Can view all teams and health checks in their department
+- SENIOR_MANAGER: Can view all departments, teams, and health checks
+- ADMIN: Has full access to all system features
+
+Login Flow:
+1. User accesses login page (/accounts/login/)
+2. Authentication processed by accounts.views.user_login
+3. After successful login, user redirected to dashboard (/accounts/dashboard/)
+
+Permission Checks:
+- Function-based views use @login_required decorator
+- Role-based checks implemented in view functions
+- Department and team-based permissions checked in relevant views
+
+Password Management:
+- Password reset functionality via Django's built-in system
+- Django's password hashing used for secure password storage
+
+User-related URLs:
+- /accounts/login/: Login page
+- /accounts/logout/: Logout endpoint
+- /accounts/register/: New user registration
+- /accounts/profile/: User profile
+- /accounts/profile/edit/: Edit profile
+- /accounts/password/change/: Change password
+
+==========================================================
+6. APPLICATION COMPONENTS
+==========================================================
+
+6.1. ACCOUNTS APP
+-----------------
+
+Purpose: Manages user authentication, registration, and profiles
+
+Key Files:
+- accounts/models.py: Custom User model and UserManager
+- accounts/views.py: Authentication and profile management views
+- accounts/forms.py: Login, registration, and profile forms
+- accounts/admin.py: Admin interface for User model
+
+Core Functionality:
+- User authentication (login/logout)
+- User registration
+- Profile management
+- Role-based access control
+
+Key Views:
+- user_login: Authenticates users
+- register: Creates new user accounts
+- dashboard: User's main dashboard
+- profile: Displays user profile
+- edit_profile: Updates user profile
+- change_password: Changes user password
+
+Templates:
+- accounts/login.html: Login form
+- accounts/register.html: Registration form
+- accounts/dashboard.html: User dashboard
+- accounts/profile.html: User profile
+- accounts/edit_profile.html: Edit profile form
+- accounts/change_password.html: Change password form
+
+6.2. DEPARTMENTS APP
+-------------------
+
+Purpose: Manages department structure and information
+
+Key Files:
+- departments/models.py: Department model
+- departments/views.py: Department management views
+- departments/forms.py: Department forms
+- departments/admin.py: Admin interface for Department model
+
+Core Functionality:
+- Department listing and details
+- Department creation and editing
+- Department member management
+
+Key Views:
+- department_list: Lists all departments
+- department_detail: Shows department details
+- create_department: Creates new department
+- edit_department: Updates department details
+- delete_department: Removes department
+
+Templates:
+- departments/department_list.html: Department list
+- departments/department_detail.html: Department details
+- departments/department_form.html: Create/edit department form
+
+6.3. TEAMS APP
+-------------
+
+Purpose: Manages teams and team membership
+
+Key Files:
+- teams/models.py: Team and TeamMember models
+- teams/views.py: Team management views
+- teams/forms.py: Team and team membership forms
+- teams/admin.py: Admin interface for Team models
+
+Core Functionality:
+- Team listing and details
+- Team creation and editing
+- Team member management
+
+Key Views:
+- team_list: Lists all teams
+- team_detail: Shows team details
+- create_team: Creates new team
+- edit_team: Updates team details
+- delete_team: Removes team
+- add_team_member: Adds user to team
+- remove_team_member: Removes user from team
+
+Templates:
+- teams/team_list.html: Team list
+- teams/team_detail.html: Team details
+- teams/team_form.html: Create/edit team form
+- teams/team_members.html: Manage team members
+
+6.4. HEALTH_CHECKS APP
+---------------------
+
+Purpose: Manages health check templates, sessions, and responses
+
+Key Files:
+- health_checks/models.py: Health check models (Category, Question, HealthCheck, Session, Response)
+- health_checks/views.py: Health check management views
+- health_checks/forms.py: Health check forms
+- health_checks/admin.py: Admin interface for health check models
+
+Core Functionality:
+- Health check template management
+- Health check category and question management
+- Health check session creation and management
+- Response collection and visualization
+
+Key Views:
+- health_check_list: Lists health check templates
+- health_check_detail: Shows template details
+- create_health_check: Creates new template
+- edit_health_check: Updates template
+- delete_health_check: Removes template
+- session_list: Lists health check sessions
+- session_detail: Shows session details
+- create_session: Creates new session
+- participate_session: Collects user responses
+- session_results: Shows session results
+
+Templates:
+- health_checks/health_check_list.html: Template list
+- health_checks/health_check_detail.html: Template details
+- health_checks/health_check_form.html: Create/edit template form
+- health_checks/session_list.html: Session list
+- health_checks/session_detail.html: Session details
+- health_checks/session_form.html: Create session form
+- health_checks/participate.html: Respond to health check
+- health_checks/results.html: Session results
+
+6.5. ANALYTICS APP
+-----------------
+
+Purpose: Provides data visualization and analytics features
+
+Key Files:
+- analytics/views.py: Analytics views
+- analytics/urls.py: Analytics URL patterns
+
+Core Functionality:
+- Trend analysis over time
+- Team comparison
+- Category health visualization
+- Top concerns identification
+
+Key Views:
+- dashboard: Main analytics dashboard
+- get_trend_data: Retrieves trend data for charts
+- get_category_health: Gets health metrics by category
+- get_top_concerns: Identifies top concern areas
+- get_team_performance: Retrieves team performance data
+
+Templates:
+- analytics/dashboard.html: Analytics dashboard
+- analytics/unauthorized.html: Access denied page
+
+==========================================================
+7. TEMPLATES STRUCTURE
+==========================================================
+
+The application uses Django's template system with the following structure:
+
+Base Templates:
+- base.html: Main layout template with Bootstrap, navigation, and container
+- sidebar.html: Common sidebar navigation
+- footer.html: Common footer content
+
+Authentication Templates:
+- accounts/login.html: Login form
+- accounts/register.html: Registration form
+- accounts/dashboard.html: User dashboard
+- accounts/profile.html: User profile
+- accounts/edit_profile.html: Edit profile form
+
+Content Templates:
+- departments/department_*.html: Department management templates
+- teams/team_*.html: Team management templates
+- health_checks/health_check_*.html: Health check templates
+- health_checks/session_*.html: Session management templates
+- analytics/dashboard.html: Analytics dashboard
+
+Template Context Processors:
+- request: Provides access to the current HttpRequest
+- auth: Provides access to the current user and permissions
+- messages: Provides access to the messages framework
+
+Template Tags and Filters:
+- utils.py: Custom template tags for permissions, formatting, etc.
+
+==========================================================
+8. STATIC FILES
+==========================================================
+
+Static files are organized as follows:
+
+CSS:
+- static/css/styles.css: Main stylesheet
+- static/css/bootstrap.min.css: Bootstrap CSS
+
+JavaScript:
+- static/js/main.js: Common JavaScript functions
+- static/js/charts.js: Chart.js integration for visualizations
+- static/js/bootstrap.bundle.min.js: Bootstrap JavaScript
+
+Images:
+- static/img/logo.svg: Application logo
+- static/img/icons/: SVG icons used throughout the application
+
+Static File Management:
+- During development: Served by Django's staticfiles app
+- In production: Served by WhiteNoise middleware
+- STATIC_ROOT set to 'staticfiles' directory
+- STATICFILES_DIRS includes the 'static' directory
+
+==========================================================
+9. URL PATTERNS
+==========================================================
+
+The URL structure is organized by app:
+
+Main URLs (health_check_project/urls.py):
+- / → health_check_project.views.index
+- /admin/ → Django admin interface
+- /accounts/ → accounts.urls
+- /departments/ → departments.urls
+- /teams/ → teams.urls
+- /health-checks/ → health_checks.urls
+- /analytics/ → analytics.urls
+
+Accounts URLs:
+- /accounts/login/ → User login
+- /accounts/logout/ → User logout
+- /accounts/register/ → User registration
+- /accounts/dashboard/ → User dashboard
+- /accounts/profile/ → User profile
+- /accounts/profile/edit/ → Edit profile
+- /accounts/password/change/ → Change password
+
+Departments URLs:
+- /departments/ → Department list
+- /departments/create/ → Create department
+- /departments/<id>/ → Department detail
+- /departments/<id>/edit/ → Edit department
+- /departments/<id>/delete/ → Delete department
+
+Teams URLs:
+- /teams/ → Team list
+- /teams/create/ → Create team
+- /teams/<id>/ → Team detail
+- /teams/<id>/edit/ → Edit team
+- /teams/<id>/delete/ → Delete team
+- /teams/<id>/members/ → Manage team members
+- /teams/<id>/members/add/ → Add team member
+- /teams/<id>/members/<user_id>/remove/ → Remove team member
+
+Health Checks URLs:
+- /health-checks/ → Health check template list
+- /health-checks/create/ → Create template
+- /health-checks/<id>/ → Template detail
+- /health-checks/<id>/edit/ → Edit template
+- /health-checks/<id>/delete/ → Delete template
+- /health-checks/sessions/ → Session list
+- /health-checks/sessions/create/ → Create session
+- /health-checks/sessions/<id>/ → Session detail
+- /health-checks/sessions/<id>/participate/ → Participate in session
+- /health-checks/sessions/<id>/results/ → View session results
+
+Analytics URLs:
+- /analytics/ → Analytics dashboard
+- /analytics/data/trends/ → Trend data API
+- /analytics/data/categories/ → Category health API
+- /analytics/data/concerns/ → Top concerns API
+- /analytics/data/teams/ → Team performance API
+
+==========================================================
+10. DATA FLOW AND BUSINESS LOGIC
+==========================================================
+
+Key Workflows:
+
+1. User Authentication:
+   - User submits login form
+   - accounts.views.user_login authenticates credentials
+   - User redirected to dashboard or shown error
+
+2. Health Check Creation:
+   - Team leader creates a new health check session
+   - Selects a template, team, and date range
+   - System creates HealthCheckSession and adds team members as participants
+   - Email notifications (optional) sent to participants
+
+3. Health Check Participation:
+   - User accesses their active health check sessions
+   - For each question, user selects a status and optional comment
+   - Responses stored in HealthCheckResponse model
+   - Progress tracked and completion status updated
+
+4. Analytics Generation:
+   - User accesses analytics dashboard
+   - System queries database for relevant health check data
+   - Data processed and aggregated by categories, teams, and time periods
+   - Results visualized with charts and metrics
+
+Business Rules:
+- User access filtered by role and department membership
+- Team leaders can only manage their own teams
+- Department leaders can only view their department
+- Health check responses are anonymous when specified
+- Health check sessions have defined start and end dates
+- Participation limited to assigned team members
+- Historical data preserved for trend analysis
+
+==========================================================
+11. SECURITY CONSIDERATIONS
+==========================================================
+
+Authentication and Authorization:
+- Django's built-in authentication system secures login
+- CSRF protection on all forms
+- Password hashing with PBKDF2
+- Role-based access control for all views
+- Object-level permissions for sensitive operations
+
+Database Security:
+- Parameterized queries prevent SQL injection
+- Database credentials stored in environment variables
+- Connection pooling and timeout settings configured
+
+Input Validation:
+- Form validation on all user inputs
+- Model validation enforces data integrity
+- XSS protection through Django's template system
+
+Session Security:
+- HTTPS required for all connections
+- Secure cookie settings configured
+- Session timeouts implemented
+
+Deployment Security:
+- Debug mode disabled in production
+- Secret key stored as environment variable
+- Static file serving configured securely with WhiteNoise
+- Database connection parameters secured
+
+==========================================================
+12. DEPLOYMENT INSTRUCTIONS
+==========================================================
+
+Prerequisites:
+- Python 3.11+
+- PostgreSQL database
+- Web server (e.g., Nginx, Apache)
+
+Environment Setup:
+1. Create a Python virtual environment
+2. Install dependencies with: pip install -r requirements.txt
+3. Configure environment variables:
+   - DJANGO_SETTINGS_MODULE=health_check_project.settings
+   - SECRET_KEY=<secure-random-key>
+   - DATABASE_URL=<database-connection-string>
+   - DEBUG=False
+
+Database Setup:
+1. Create PostgreSQL database
+2. Run migrations: python manage.py migrate
+3. Create superuser: python manage.py createsuperuser
+4. Seed initial data: python generate_complete_data.py
+
+Static Files:
+1. Collect static files: python manage.py collectstatic
+2. Configure web server to serve static files
+
+Web Server Configuration:
+1. Configure Gunicorn or uWSGI to serve the Django application
+2. Set up Nginx/Apache as a reverse proxy
+3. Configure HTTPS with valid SSL certificate
+
+Monitoring and Maintenance:
+1. Set up regular database backups
+2. Configure logging
+3. Set up monitoring and alerting
+4. Plan for regular updates and maintenance
+
+==========================================================
+13. DATA GENERATION SCRIPTS
+==========================================================
+
+The project includes several data generation scripts:
+
+generate_complete_data.py:
+- Main comprehensive data generation script
+- Creates all necessary data for the application
+- Departments, users, teams, health checks, responses
+- Configurable parameters for data volume
+- Supports creating specific roles and relationships
+
+Key Features:
+- Creates users with different roles
+- Creates departments and associates them with users
+- Creates teams and assigns members
+- Creates health check categories and questions
+- Creates health check templates
+- Creates health check sessions with realistic response patterns
+- Generates historical data for trending
+
+Usage:
+```
+python generate_complete_data.py
+```
+
+Configuration:
+- NUM_DEPARTMENTS: Number of departments to create
+- USERS_PER_ROLE: Number of users to create for each role
+- TEAMS_PER_DEPARTMENT: Number of teams per department
+- ENGINEERS_PER_TEAM: Number of engineers per team
+- SESSIONS_PER_TEAM: Number of health check sessions per team
+- HISTORY_MONTHS: Number of months of historical data to generate
+
+==========================================================
+14. TESTING
+==========================================================
+
+Testing Framework:
+- Django's built-in testing framework
+- pytest for advanced testing features
+
+Test Types:
+- Unit tests for models and utility functions
+- View tests for HTTP endpoints
+- Form tests for input validation
+- Template tests for rendering
+- Integration tests for workflows
+
+Test Files:
+- accounts/tests.py: Tests for user authentication
+- departments/tests.py: Tests for department management
+- teams/tests.py: Tests for team management
+- health_checks/tests.py: Tests for health check functionality
+- analytics/tests.py: Tests for analytics features
+
+Test Data:
+- Fixtures used for common test data
+- Factory classes for generating test models
+- Mock objects for external dependencies
+
+Running Tests:
+```
+python manage.py test
+```
+
+Continuous Integration:
+- Tests run automatically on every commit
+- Coverage reports generated
+- Linting and code quality checks performed

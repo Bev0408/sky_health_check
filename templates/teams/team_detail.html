@@ -1,0 +1,272 @@
+{% extends 'base.html' %}
+
+{% block title %}{{ team.name }} - Team Details{% endblock %}
+
+{% block content %}
+<div class="row mb-4">
+    <div class="col-md-8">
+        <h1>{{ team.name }}</h1>
+        <p class="text-muted">Team details and health check history</p>
+    </div>
+    <div class="col-md-4 text-end">
+        <div class="btn-group">
+            {% if perms.teams.change_team or user.id == team.leader.id or user.is_department_leader or user.is_senior_manager or user.is_admin %}
+            <a href="{% url 'edit_team' team.id %}" class="btn btn-outline-primary">
+                <i class="fas fa-edit me-2"></i> Edit Team
+            </a>
+            {% endif %}
+            
+            {% if perms.health_checks.add_healthchecksession or user.id == team.leader.id or user.is_department_leader or user.is_senior_manager or user.is_admin %}
+            <a href="{% url 'create_session' %}?team={{ team.id }}" class="btn btn-primary">
+                <i class="fas fa-heartbeat me-2"></i> New Health Check
+            </a>
+            {% endif %}
+        </div>
+    </div>
+</div>
+
+{% if messages %}
+<div class="row">
+    <div class="col-12">
+        {% for message in messages %}
+        <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+            {{ message }}
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+{% endif %}
+
+<div class="row">
+    <div class="col-md-4">
+        <div class="card mb-4">
+            <div class="card-header">
+                <h5 class="mb-0">Team Information</h5>
+            </div>
+            <div class="card-body">
+                <div class="mb-3">
+                    <div class="text-muted mb-1">Department:</div>
+                    <div>{{ team.department.name|default:"No Department" }}</div>
+                </div>
+                <div class="mb-3">
+                    <div class="text-muted mb-1">Team Leader:</div>
+                    <div>{{ team.leader.full_name|default:"No leader assigned" }}</div>
+                </div>
+                <div class="mb-3">
+                    <div class="text-muted mb-1">Created:</div>
+                    <div>{{ team.created_at|date:"F j, Y" }}</div>
+                </div>
+                <div>
+                    <div class="text-muted mb-1">Description:</div>
+                    <div>{{ team.description|default:"No description provided"|linebreaks }}</div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="card">
+            <div class="card-header d-flex justify-content-between align-items-center">
+                <h5 class="mb-0">Team Members</h5>
+                <span class="badge bg-primary rounded-pill">{{ team_members|length }}</span>
+            </div>
+            <div class="card-body p-0">
+                <ul class="list-group list-group-flush">
+                    {% for membership in team_members %}
+                    <li class="list-group-item">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div>
+                                <strong>{{ membership.user.full_name }}</strong>
+                                <div class="text-muted small">{{ membership.user.email }}</div>
+                            </div>
+                            {% if membership.is_leader %}
+                            <span class="badge bg-primary">Team Leader</span>
+                            {% endif %}
+                        </div>
+                    </li>
+                    {% empty %}
+                    <li class="list-group-item">No team members assigned</li>
+                    {% endfor %}
+                </ul>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-8">
+        <div class="card mb-4">
+            <div class="card-header">
+                <h5 class="mb-0">Health Check History</h5>
+            </div>
+            <div class="card-body">
+                {% if health_check_sessions %}
+                <div class="table-responsive">
+                    <table class="table table-hover">
+                        <thead>
+                            <tr>
+                                <th>Date</th>
+                                <th>Health Check</th>
+                                <th>Status</th>
+                                <th>Results</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for session in health_check_sessions %}
+                            <tr>
+                                <td>{{ session.start_date|date:"M d, Y" }}</td>
+                                <td>{{ session.health_check.name }}</td>
+                                <td>
+                                    {% if session.is_active %}
+                                    <span class="badge bg-success">Active</span>
+                                    {% else %}
+                                    <span class="badge bg-secondary">Completed</span>
+                                    {% endif %}
+                                </td>
+                                <td>
+                                    {% if session.has_responses %}
+                                    <div class="progress" style="height: 8px; width: 120px">
+                                        <div class="progress-bar bg-success" 
+                                            role="progressbar" 
+                                            style="width: {{ session.green_percentage }}%" 
+                                            aria-valuenow="{{ session.green_percentage }}" 
+                                            aria-valuemin="0" 
+                                            aria-valuemax="100"></div>
+                                        <div class="progress-bar bg-warning" 
+                                            role="progressbar" 
+                                            style="width: {{ session.yellow_percentage }}%" 
+                                            aria-valuenow="{{ session.yellow_percentage }}" 
+                                            aria-valuemin="0" 
+                                            aria-valuemax="100"></div>
+                                        <div class="progress-bar bg-danger" 
+                                            role="progressbar" 
+                                            style="width: {{ session.red_percentage }}%" 
+                                            aria-valuenow="{{ session.red_percentage }}" 
+                                            aria-valuemin="0" 
+                                            aria-valuemax="100"></div>
+                                    </div>
+                                    {% else %}
+                                    <span class="text-muted">No responses yet</span>
+                                    {% endif %}
+                                </td>
+                                <td>
+                                    <div class="btn-group">
+                                        <a href="{% url 'session_detail' session.id %}" class="btn btn-sm btn-outline-primary">
+                                            <i class="fas fa-eye"></i>
+                                        </a>
+                                        {% if session.has_responses %}
+                                        <a href="{% url 'session_results' session.id %}" class="btn btn-sm btn-outline-success">
+                                            <i class="fas fa-chart-bar"></i>
+                                        </a>
+                                        {% endif %}
+                                    </div>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+                {% else %}
+                <div class="alert alert-info">
+                    <h5 class="alert-heading">No Health Checks Yet</h5>
+                    <p class="mb-0">This team hasn't completed any health checks. 
+                    {% if perms.health_checks.add_healthchecksession or user.id == team.leader.id or user.is_department_leader or user.is_senior_manager or user.is_admin %}
+                    You can start a new health check session using the button above.
+                    {% endif %}
+                    </p>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+        
+        <div class="card">
+            <div class="card-header">
+                <h5 class="mb-0">Health Trends</h5>
+            </div>
+            <div class="card-body">
+                {% if health_check_sessions %}
+                <canvas id="healthTrendsChart" width="400" height="200"></canvas>
+                {% else %}
+                <div class="alert alert-info mb-0">
+                    <p class="mb-0">No health check history available to display trends.</p>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+{% if health_check_sessions %}
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Data for the chart
+        const dates = [{% for session in health_check_sessions %}"{{ session.start_date|date:'M d, Y' }}"{% if not forloop.last %}, {% endif %}{% endfor %}];
+        const greenData = [{% for session in health_check_sessions %}{{ session.green_percentage|default:0 }}{% if not forloop.last %}, {% endif %}{% endfor %}];
+        const yellowData = [{% for session in health_check_sessions %}{{ session.yellow_percentage|default:0 }}{% if not forloop.last %}, {% endif %}{% endfor %}];
+        const redData = [{% for session in health_check_sessions %}{{ session.red_percentage|default:0 }}{% if not forloop.last %}, {% endif %}{% endfor %}];
+        
+        // Create the chart
+        const ctx = document.getElementById('healthTrendsChart').getContext('2d');
+        const chart = new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: dates,
+                datasets: [
+                    {
+                        label: 'Good',
+                        data: greenData,
+                        borderColor: '#28a745',
+                        backgroundColor: 'rgba(40, 167, 69, 0.1)',
+                        borderWidth: 2,
+                        fill: true,
+                        tension: 0.1
+                    },
+                    {
+                        label: 'Neutral',
+                        data: yellowData,
+                        borderColor: '#ffc107',
+                        backgroundColor: 'rgba(255, 193, 7, 0.1)',
+                        borderWidth: 2,
+                        fill: true,
+                        tension: 0.1
+                    },
+                    {
+                        label: 'Concern',
+                        data: redData,
+                        borderColor: '#dc3545',
+                        backgroundColor: 'rgba(220, 53, 69, 0.1)',
+                        borderWidth: 2,
+                        fill: true,
+                        tension: 0.1
+                    }
+                ]
+            },
+            options: {
+                responsive: true,
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        max: 100,
+                        title: {
+                            display: true,
+                            text: 'Percentage'
+                        }
+                    }
+                },
+                plugins: {
+                    title: {
+                        display: true,
+                        text: 'Team Health Check Trends'
+                    },
+                    tooltip: {
+                        mode: 'index',
+                        intersect: false
+                    }
+                }
+            }
+        });
+    });
+</script>
+{% endif %}
+{% endblock %}

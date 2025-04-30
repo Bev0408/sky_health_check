@@ -1,0 +1,161 @@
+{% extends "base.html" %}
+
+{% block title %}SKY Health - Profile{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-4 mb-4">
+        <div class="card shadow-sm">
+            <div class="card-body">
+                <div class="d-flex align-items-center mb-4">
+                    <div class="profile-avatar me-3">
+                        {{ current_user.username[0].upper() }}{{ current_user.username[1].upper() if current_user.username|length > 1 else '' }}
+                    </div>
+                    <div>
+                        <h5 class="mb-0">{{ current_user.full_name }}</h5>
+                        <p class="text-muted mb-0">{{ current_user.username }}</p>
+                        <small class="text-primary">{{ current_user.role.replace('_', ' ').title() }}</small>
+                    </div>
+                </div>
+                
+                <ul class="nav flex-column profile-nav">
+                    <li class="nav-item">
+                        <a class="nav-link active" href="#personal-info">
+                            <i class="fas fa-user me-2"></i>
+                            Personal Info
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ url_for('change_password') }}">
+                            <i class="fas fa-lock me-2"></i>
+                            Security
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#notifications">
+                            <i class="fas fa-bell me-2"></i>
+                            Notifications
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-8">
+        <div class="card shadow-sm">
+            <div class="card-header bg-white">
+                <h5 class="mb-0" id="personal-info">Personal Information</h5>
+            </div>
+            <div class="card-body">
+                <form method="POST" action="{{ url_for('profile') }}">
+                    {{ form.hidden_tag() }}
+                    
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label for="full_name" class="form-label">Full Name</label>
+                            {{ form.full_name(class="form-control") }}
+                            {% if form.full_name.errors %}
+                                <div class="text-danger small mt-1">
+                                    {% for error in form.full_name.errors %}
+                                        {{ error }}
+                                    {% endfor %}
+                                </div>
+                            {% endif %}
+                        </div>
+                        
+                        <div class="col-md-6 mb-3">
+                            <label for="email" class="form-label">Email</label>
+                            {{ form.email(class="form-control") }}
+                            {% if form.email.errors %}
+                                <div class="text-danger small mt-1">
+                                    {% for error in form.email.errors %}
+                                        {{ error }}
+                                    {% endfor %}
+                                </div>
+                            {% endif %}
+                        </div>
+                    </div>
+                    
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label for="department" class="form-label">Department</label>
+                            {{ form.department(class="form-select") }}
+                            {% if form.department.errors %}
+                                <div class="text-danger small mt-1">
+                                    {% for error in form.department.errors %}
+                                        {{ error }}
+                                    {% endfor %}
+                                </div>
+                            {% endif %}
+                        </div>
+                        
+                        <div class="col-md-6 mb-3">
+                            <label for="role" class="form-label">Role</label>
+                            <input type="text" class="form-control" value="{{ current_user.role.replace('_', ' ').title() }}" disabled>
+                            <small class="text-muted">Role changes require administrator approval</small>
+                        </div>
+                    </div>
+                    
+                    <div class="d-flex justify-content-end mt-3">
+                        {{ form.submit(class="btn btn-primary") }}
+                    </div>
+                </form>
+            </div>
+        </div>
+        
+        <div class="card shadow-sm mt-4">
+            <div class="card-header bg-white">
+                <h5 class="mb-0">Teams</h5>
+            </div>
+            <div class="card-body">
+                {% if current_user.teams %}
+                <div class="list-group">
+                    {% for team in current_user.teams %}
+                    <div class="list-group-item list-group-item-action d-flex justify-content-between align-items-center">
+                        <div>
+                            <h6 class="mb-0">{{ team.name }}</h6>
+                            <small class="text-muted">{{ team.department.name if team.department else 'No department' }}</small>
+                        </div>
+                        {% if team.get_leader() and team.get_leader().id == current_user.id %}
+                        <span class="badge bg-primary">Team Leader</span>
+                        {% endif %}
+                    </div>
+                    {% endfor %}
+                </div>
+                {% else %}
+                <div class="text-center text-muted py-3">
+                    <p class="mb-0">You are not part of any team yet.</p>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+        
+        <div class="card shadow-sm mt-4">
+            <div class="card-header bg-white">
+                <h5 class="mb-0">Recent Health Checks</h5>
+            </div>
+            <div class="card-body">
+                {% if current_user.responses %}
+                <div class="list-group">
+                    {% for response in current_user.responses|sort(attribute='created_at', reverse=True)|slice(0, 5) %}
+                    <a href="{{ url_for('view_health_check', id=response.session.id) }}" class="list-group-item list-group-item-action">
+                        <div class="d-flex w-100 justify-content-between">
+                            <h6 class="mb-1">{{ response.session.health_check.name }}</h6>
+                            <small>{{ response.created_at.strftime('%b %d, %Y') }}</small>
+                        </div>
+                        <p class="mb-1">{{ response.question.text }}</p>
+                        <small class="text-muted">Status: <span class="text-{{ get_status_color(response.status) }}">{{ response.status_label }}</span></small>
+                    </a>
+                    {% endfor %}
+                </div>
+                {% else %}
+                <div class="text-center text-muted py-3">
+                    <p class="mb-0">You haven't participated in any health checks yet.</p>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

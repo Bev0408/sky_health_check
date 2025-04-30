@@ -1,0 +1,281 @@
+2025-04-30 10:34:47.239 [info] Experiment 'pythonRecommendTensorboardExt' is active
+2025-04-30 10:34:47.239 [info] Experiment 'pythonTerminalEnvVarActivation' is active
+2025-04-30 10:34:47.239 [warning] Dir "/Users/tanyamills/Documents/GitHub/HealthCheck/.pixi/envs" is not watchable (directory does not exist)
+2025-04-30 10:34:47.239 [info] Running installed packages checker:  {
+  id: '/usr/bin/python3',
+  sysPrefix: '/Library/Frameworks/Python.framework/Versions/3.11',
+  envType: 'Global',
+  envName: '',
+  envPath: '',
+  path: '/usr/bin/python3',
+  architecture: 3,
+  sysVersion: '3.11.0 (v3.11.0:deaf509e8f, Oct 24 2022, 14:43:23) [Clang 13.0.0 (clang-1300.0.29.30)]',
+  version: {
+    raw: '3.11.0',
+    major: 3,
+    minor: 11,
+    patch: 0,
+    build: [],
+    prerelease: [ 'final', '0' ]
+  },
+  displayName: 'Python 3.11.0 64-bit',
+  detailedDisplayName: 'Python 3.11.0 64-bit',
+  type: undefined
+} /Users/tanyamills/.vscode/extensions/ms-python.python-2025.4.0-darwin-arm64/python_files/installed_check.py /Users/tanyamills/Documents/GitHub/HealthCheck/requirements_local.txt
+2025-04-30 10:34:47.239 [info] > /usr/bin/python3 ~/.vscode/extensions/ms-python.python-2025.4.0-darwin-arm64/python_files/installed_check.py ./requirements_local.txt
+2025-04-30 10:34:47.239 [info] Python interpreter path: /usr/bin/python3
+2025-04-30 10:34:47.239 [info] > pyenv which python
+2025-04-30 10:34:47.239 [info] cwd: .
+2025-04-30 10:34:48.263 [info] Starting Pylance language server.
+2025-04-30 10:34:57.323 [info] Selected workspace /Users/tanyamills/Documents/GitHub/HealthCheck for creating virtual environment.
+2025-04-30 10:34:57.329 [info] Starting Environment refresh
+2025-04-30 10:34:57.329 [info] Searching for interpreters in posix paths locator
+2025-04-30 10:34:57.330 [info] Searching for pyenv environments
+2025-04-30 10:34:57.330 [info] Searching for conda environments
+2025-04-30 10:34:57.330 [info] Searching for global virtual environments
+2025-04-30 10:34:57.330 [info] Searching for custom virtual environments
+2025-04-30 10:34:57.333 [info] > conda info --json
+2025-04-30 10:34:57.334 [info] > hatch env show --json
+2025-04-30 10:34:57.334 [info] cwd: .
+2025-04-30 10:34:57.336 [info] pyenv is not installed
+2025-04-30 10:34:57.336 [info] Finished searching for pyenv environments: 7 milliseconds
+2025-04-30 10:34:57.336 [info] Finished searching for custom virtual envs: 6 milliseconds
+2025-04-30 10:34:57.337 [info] Finished searching for global virtual envs: 7 milliseconds
+2025-04-30 10:34:57.358 [info] Found: /usr/bin/python3 --> /usr/bin/python3
+2025-04-30 10:34:57.360 [info] Found: /usr/local/bin/python3 --> /Library/Frameworks/Python.framework/Versions/3.11/bin/python3.11
+2025-04-30 10:34:57.362 [info] > /usr/bin/python3 -I ~/.vscode/extensions/ms-python.python-2025.4.0-darwin-arm64/python_files/get_output_via_markers.py ~/.vscode/extensions/ms-python.python-2025.4.0-darwin-arm64/python_files/interpreterInfo.py
+2025-04-30 10:34:57.362 [info] Found: /usr/local/bin/python3.11 --> /Library/Frameworks/Python.framework/Versions/3.11/bin/python3.11
+2025-04-30 10:34:57.362 [info] Found: /Library/Frameworks/Python.framework/Versions/3.11/bin/python3 --> /Library/Frameworks/Python.framework/Versions/3.11/bin/python3.11
+2025-04-30 10:34:57.362 [info] Found: /Library/Frameworks/Python.framework/Versions/3.11/bin/python3.11 --> /Library/Frameworks/Python.framework/Versions/3.11/bin/python3.11
+2025-04-30 10:34:57.363 [info] Finished searching for interpreters in posix paths locator: 35 milliseconds
+2025-04-30 10:34:57.364 [info] > /usr/local/bin/python3 -I ~/.vscode/extensions/ms-python.python-2025.4.0-darwin-arm64/python_files/get_output_via_markers.py ~/.vscode/extensions/ms-python.python-2025.4.0-darwin-arm64/python_files/interpreterInfo.py
+2025-04-30 10:34:57.364 [info] Environments refresh paths discovered (event): 37 milliseconds
+2025-04-30 10:34:57.364 [info] Environments refresh paths discovered: 37 milliseconds
+2025-04-30 10:34:57.390 [info] Environments refresh finished (event): 63 milliseconds
+2025-04-30 10:34:57.391 [info] Environment refresh took 65 milliseconds
+2025-04-30 10:34:58.951 [info] Selected interpreter /usr/bin/python3 for creating virtual environment.
+2025-04-30 10:35:00.905 [info] Running Env creation script:  [
+  '/usr/bin/python3',
+  '/Users/tanyamills/.vscode/extensions/ms-python.python-2025.4.0-darwin-arm64/python_files/create_venv.py',
+  '--git-ignore',
+  '--requirements',
+  '/Users/tanyamills/Documents/GitHub/HealthCheck/requirements.local.txt'
+]
+2025-04-30 10:35:00.905 [info] > /usr/bin/python3 ~/.vscode/extensions/ms-python.python-2025.4.0-darwin-arm64/python_files/create_venv.py --git-ignore --requirements ./requirements.local.txt
+2025-04-30 10:35:00.905 [info] cwd: .
+2025-04-30 10:35:01.001 [info] Running: /usr/local/bin/python3 -m venv .venv
+2025-04-30 10:35:02.112 [info] > ./.venv/bin/python -I ~/.vscode/extensions/ms-python.python-2025.4.0-darwin-arm64/python_files/get_output_via_markers.py ~/.vscode/extensions/ms-python.python-2025.4.0-darwin-arm64/python_files/interpreterInfo.py
+2025-04-30 10:35:02.112 [info] Environments refresh paths discovered: 4 milliseconds
+2025-04-30 10:35:02.134 [info] Environments refresh finished (event): 26 milliseconds
+2025-04-30 10:35:02.518 [info] CREATED_VENV:/Users/tanyamills/Documents/GitHub/HealthCheck/.venv/bin/python
+2025-04-30 10:35:02.518 [info] Creating: /Users/tanyamills/Documents/GitHub/HealthCheck/.venv/.gitignore
+CREATE_VENV.UPGRADING_PIP
+Running: /Users/tanyamills/Documents/GitHub/HealthCheck/.venv/bin/python -m pip install --upgrade pip
+2025-04-30 10:35:02.646 [info] Requirement already satisfied: pip in ./.venv/lib/python3.11/site-packages (22.3)
+2025-04-30 10:35:02.732 [info] Collecting pip
+2025-04-30 10:35:02.749 [info]   Using cached pip-25.1-py3-none-any.whl (1.8 MB)
+2025-04-30 10:35:02.767 [info] Installing collected packages: pip
+2025-04-30 10:35:02.767 [info]   Attempting uninstall: pip
+2025-04-30 10:35:02.768 [info]     Found existing installation: pip 22.3
+2025-04-30 10:35:02.858 [info]     Uninstalling pip-22.3:
+2025-04-30 10:35:02.863 [info]       Successfully uninstalled pip-22.3
+2025-04-30 10:35:03.311 [info] Successfully installed pip-25.1
+2025-04-30 10:35:03.379 [info] CREATE_VENV.UPGRADED_PIP
+VENV_INSTALLING_REQUIREMENTS: ['/Users/tanyamills/Documents/GitHub/HealthCheck/requirements.local.txt']
+VENV_INSTALLING_REQUIREMENTS: /Users/tanyamills/Documents/GitHub/HealthCheck/requirements.local.txt
+Running: /Users/tanyamills/Documents/GitHub/HealthCheck/.venv/bin/python -m pip install -r /Users/tanyamills/Documents/GitHub/HealthCheck/requirements.local.txt
+2025-04-30 10:35:03.573 [info] Collecting Django==5.2.0 (from -r /Users/tanyamills/Documents/GitHub/HealthCheck/requirements.local.txt (line 1))
+2025-04-30 10:35:03.617 [info]   Downloading Django-5.2-py3-none-any.whl.metadata (4.1 kB)
+2025-04-30 10:35:03.640 [info] Collecting crispy-bootstrap5==2023.10 (from -r /Users/tanyamills/Documents/GitHub/HealthCheck/requirements.local.txt (line 2))
+2025-04-30 10:35:03.649 [info]   Downloading crispy_bootstrap5-2023.10-py3-none-any.whl.metadata (3.5 kB)
+2025-04-30 10:35:03.671 [info] Collecting django-crispy-forms==2.1.0 (from -r /Users/tanyamills/Documents/GitHub/HealthCheck/requirements.local.txt (line 3))
+2025-04-30 10:35:03.679 [info]   Downloading django_crispy_forms-2.1-py3-none-any.whl.metadata (5.0 kB)
+2025-04-30 10:35:03.697 [info] Collecting email-validator==2.1.0.post1 (from -r /Users/tanyamills/Documents/GitHub/HealthCheck/requirements.local.txt (line 4))
+2025-04-30 10:35:03.707 [info]   Downloading email_validator-2.1.0.post1-py3-none-any.whl.metadata (25 kB)
+2025-04-30 10:35:03.756 [info] Collecting Faker==22.6.0 (from -r /Users/tanyamills/Documents/GitHub/HealthCheck/requirements.local.txt (line 5))
+2025-04-30 10:35:03.843 [info]   Downloading Faker-22.6.0-py3-none-any.whl.metadata (15 kB)
+2025-04-30 10:35:03.866 [info] Collecting gunicorn==21.2.0 (from -r /Users/tanyamills/Documents/GitHub/HealthCheck/requirements.local.txt (line 6))
+2025-04-30 10:35:03.876 [info]   Downloading gunicorn-21.2.0-py3-none-any.whl.metadata (4.1 kB)
+2025-04-30 10:35:03.919 [info] Collecting psycopg2-binary==2.9.9 (from -r /Users/tanyamills/Documents/GitHub/HealthCheck/requirements.local.txt (line 7))
+2025-04-30 10:35:03.964 [info] > ./.venv/bin/python -I ~/.vscode/extensions/ms-python.python-2025.4.0-darwin-arm64/python_files/get_output_via_markers.py ~/.vscode/extensions/ms-python.python-2025.4.0-darwin-arm64/python_files/interpreterInfo.py
+2025-04-30 10:35:03.964 [info] Environments refresh paths discovered: 2 milliseconds
+2025-04-30 10:35:03.989 [info] Environments refresh finished (event): 27 milliseconds
+2025-04-30 10:35:04.004 [info]   Downloading psycopg2_binary-2.9.9-cp311-cp311-macosx_11_0_arm64.whl.metadata (4.4 kB)
+2025-04-30 10:35:04.027 [info] Collecting python-dateutil==2.8.2 (from -r /Users/tanyamills/Documents/GitHub/HealthCheck/requirements.local.txt (line 8))
+2025-04-30 10:35:04.039 [info]   Downloading python_dateutil-2.8.2-py2.py3-none-any.whl.metadata (8.2 kB)
+2025-04-30 10:35:04.067 [info] Collecting pytz==2023.3.post1 (from -r /Users/tanyamills/Documents/GitHub/HealthCheck/requirements.local.txt (line 9))
+2025-04-30 10:35:04.077 [info]   Downloading pytz-2023.3.post1-py2.py3-none-any.whl.metadata (22 kB)
+2025-04-30 10:35:04.103 [info] Collecting whitenoise==6.6.0 (from -r /Users/tanyamills/Documents/GitHub/HealthCheck/requirements.local.txt (line 10))
+2025-04-30 10:35:04.113 [info]   Downloading whitenoise-6.6.0-py3-none-any.whl.metadata (3.7 kB)
+2025-04-30 10:35:04.198 [info] Collecting Pillow==10.1.0 (from -r /Users/tanyamills/Documents/GitHub/HealthCheck/requirements.local.txt (line 11))
+2025-04-30 10:35:04.284 [info]   Downloading Pillow-10.1.0-cp311-cp311-macosx_11_0_arm64.whl.metadata (9.5 kB)
+2025-04-30 10:35:04.311 [info] Collecting django-filter==2.4.0 (from -r /Users/tanyamills/Documents/GitHub/HealthCheck/requirements.local.txt (line 12))
+2025-04-30 10:35:04.319 [info]   Downloading django_filter-2.4.0-py3-none-any.whl.metadata (4.1 kB)
+2025-04-30 10:35:04.346 [info] Collecting django-cors-headers==4.3.1 (from -r /Users/tanyamills/Documents/GitHub/HealthCheck/requirements.local.txt (line 13))
+2025-04-30 10:35:04.356 [info]   Downloading django_cors_headers-4.3.1-py3-none-any.whl.metadata (16 kB)
+2025-04-30 10:35:04.383 [info] Collecting requests==2.31.0 (from -r /Users/tanyamills/Documents/GitHub/HealthCheck/requirements.local.txt (line 14))
+2025-04-30 10:35:04.392 [info]   Downloading requests-2.31.0-py3-none-any.whl.metadata (4.6 kB)
+2025-04-30 10:35:04.416 [info] Collecting asgiref>=3.8.1 (from Django==5.2.0->-r /Users/tanyamills/Documents/GitHub/HealthCheck/requirements.local.txt (line 1))
+2025-04-30 10:35:04.424 [info]   Downloading asgiref-3.8.1-py3-none-any.whl.metadata (9.3 kB)
+2025-04-30 10:35:04.446 [info] Collecting sqlparse>=0.3.1 (from Django==5.2.0->-r /Users/tanyamills/Documents/GitHub/HealthCheck/requirements.local.txt (line 1))
+2025-04-30 10:35:04.454 [info]   Downloading sqlparse-0.5.3-py3-none-any.whl.metadata (3.9 kB)
+2025-04-30 10:35:04.496 [info] Collecting dnspython>=2.0.0 (from email-validator==2.1.0.post1->-r /Users/tanyamills/Documents/GitHub/HealthCheck/requirements.local.txt (line 4))
+2025-04-30 10:35:04.499 [info]   Using cached dnspython-2.7.0-py3-none-any.whl.metadata (5.8 kB)
+2025-04-30 10:35:04.513 [info] Collecting idna>=2.0.0 (from email-validator==2.1.0.post1->-r /Users/tanyamills/Documents/GitHub/HealthCheck/requirements.local.txt (line 4))
+2025-04-30 10:35:04.521 [info]   Using cached idna-3.10-py3-none-any.whl.metadata (10 kB)
+2025-04-30 10:35:04.534 [info] Collecting packaging (from gunicorn==21.2.0->-r /Users/tanyamills/Documents/GitHub/HealthCheck/requirements.local.txt (line 6))
+2025-04-30 10:35:04.535 [info]   Using cached packaging-25.0-py3-none-any.whl.metadata (3.3 kB)
+2025-04-30 10:35:04.559 [info] Collecting six>=1.5 (from python-dateutil==2.8.2->-r /Users/tanyamills/Documents/GitHub/HealthCheck/requirements.local.txt (line 8))
+2025-04-30 10:35:04.566 [info]   Downloading six-1.17.0-py2.py3-none-any.whl.metadata (1.7 kB)
+2025-04-30 10:35:04.640 [info] Collecting charset-normalizer<4,>=2 (from requests==2.31.0->-r /Users/tanyamills/Documents/GitHub/HealthCheck/requirements.local.txt (line 14))
+2025-04-30 10:35:04.648 [info]   Downloading charset_normalizer-3.4.1-cp311-cp311-macosx_10_9_universal2.whl.metadata (35 kB)
+2025-04-30 10:35:04.684 [info] Collecting urllib3<3,>=1.21.1 (from requests==2.31.0->-r /Users/tanyamills/Documents/GitHub/HealthCheck/requirements.local.txt (line 14))
+2025-04-30 10:35:04.694 [info]   Downloading urllib3-2.4.0-py3-none-any.whl.metadata (6.5 kB)
+2025-04-30 10:35:04.716 [info] Collecting certifi>=2017.4.17 (from requests==2.31.0->-r /Users/tanyamills/Documents/GitHub/HealthCheck/requirements.local.txt (line 14))
+2025-04-30 10:35:04.723 [info]   Downloading certifi-2025.4.26-py3-none-any.whl.metadata (2.5 kB)
+2025-04-30 10:35:04.741 [info] Downloading Django-5.2-py3-none-any.whl (8.3 MB)
+2025-04-30 10:35:04.946 [info]    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 8.3/8.3 MB 41.9 MB/s eta 0:00:00
+2025-04-30 10:35:04.946 [info] 
+2025-04-30 10:35:04.956 [info] Downloading crispy_bootstrap5-2023.10-py3-none-any.whl (22 kB)
+2025-04-30 10:35:04.998 [info] Downloading django_crispy_forms-2.1-py3-none-any.whl (31 kB)
+2025-04-30 10:35:05.020 [info] Downloading email_validator-2.1.0.post1-py3-none-any.whl (32 kB)
+2025-04-30 10:35:05.116 [info] Downloading Faker-22.6.0-py3-none-any.whl (1.7 MB)
+2025-04-30 10:35:05.220 [info]    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 1.7/1.7 MB 15.3 MB/s eta 0:00:00
+2025-04-30 10:35:05.220 [info] 
+2025-04-30 10:35:05.230 [info] Downloading gunicorn-21.2.0-py3-none-any.whl (80 kB)
+2025-04-30 10:35:05.246 [info] Downloading psycopg2_binary-2.9.9-cp311-cp311-macosx_11_0_arm64.whl (2.6 MB)
+2025-04-30 10:35:05.300 [info]    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 2.6/2.6 MB 46.2 MB/s eta 0:00:00
+2025-04-30 10:35:05.300 [info] 
+2025-04-30 10:35:05.312 [info] Downloading python_dateutil-2.8.2-py2.py3-none-any.whl (247 kB)
+2025-04-30 10:35:05.331 [info] Downloading pytz-2023.3.post1-py2.py3-none-any.whl (502 kB)
+2025-04-30 10:35:05.358 [info] Downloading whitenoise-6.6.0-py3-none-any.whl (19 kB)
+2025-04-30 10:35:05.453 [info] Downloading Pillow-10.1.0-cp311-cp311-macosx_11_0_arm64.whl (3.3 MB)
+2025-04-30 10:35:05.595 [info]    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 3.3/3.3 MB 22.2 MB/s eta 0:00:00
+2025-04-30 10:35:05.595 [info] 
+2025-04-30 10:35:05.606 [info] Downloading django_filter-2.4.0-py3-none-any.whl (73 kB)
+2025-04-30 10:35:05.623 [info] Downloading django_cors_headers-4.3.1-py3-none-any.whl (12 kB)
+2025-04-30 10:35:05.638 [info] Downloading requests-2.31.0-py3-none-any.whl (62 kB)
+2025-04-30 10:35:05.654 [info] Downloading charset_normalizer-3.4.1-cp311-cp311-macosx_10_9_universal2.whl (194 kB)
+2025-04-30 10:35:05.676 [info] Using cached idna-3.10-py3-none-any.whl (70 kB)
+2025-04-30 10:35:05.685 [info] Downloading urllib3-2.4.0-py3-none-any.whl (128 kB)
+2025-04-30 10:35:05.705 [info] Downloading asgiref-3.8.1-py3-none-any.whl (23 kB)
+2025-04-30 10:35:05.721 [info] Downloading certifi-2025.4.26-py3-none-any.whl (159 kB)
+2025-04-30 10:35:05.731 [info] Using cached dnspython-2.7.0-py3-none-any.whl (313 kB)
+2025-04-30 10:35:05.741 [info] Downloading six-1.17.0-py2.py3-none-any.whl (11 kB)
+2025-04-30 10:35:05.756 [info] Downloading sqlparse-0.5.3-py3-none-any.whl (44 kB)
+2025-04-30 10:35:05.764 [info] Using cached packaging-25.0-py3-none-any.whl (66 kB)
+2025-04-30 10:35:05.814 [info] Installing collected packages: pytz, whitenoise, urllib3, sqlparse, six, psycopg2-binary, Pillow, packaging, idna, dnspython, charset-normalizer, certifi, asgiref, requests, python-dateutil, gunicorn, email-validator, Django, Faker, django-filter, django-crispy-forms, django-cors-headers, crispy-bootstrap5
+2025-04-30 10:35:07.953 [info] 
+2025-04-30 10:35:07.954 [info] Successfully installed Django-5.2 Faker-22.6.0 Pillow-10.1.0 asgiref-3.8.1 certifi-2025.4.26 charset-normalizer-3.4.1 crispy-bootstrap5-2023.10 django-cors-headers-4.3.1 django-crispy-forms-2.1 django-filter-2.4.0 dnspython-2.7.0 email-validator-2.1.0.post1 gunicorn-21.2.0 idna-3.10 packaging-25.0 psycopg2-binary-2.9.9 python-dateutil-2.8.2 pytz-2023.3.post1 requests-2.31.0 six-1.17.0 sqlparse-0.5.3 urllib3-2.4.0 whitenoise-6.6.0
+2025-04-30 10:35:08.017 [info] CREATE_VENV.PIP_INSTALLED_REQUIREMENTS
+2025-04-30 10:35:08.027 [info] Active interpreter [/Users/tanyamills/Documents/GitHub/HealthCheck]:  /Users/tanyamills/Documents/GitHub/HealthCheck/.venv/bin/python
+2025-04-30 10:35:08.027 [info] Discover tests for workspace name: HealthCheck - uri: /Users/tanyamills/Documents/GitHub/HealthCheck
+2025-04-30 10:35:08.027 [info] Python interpreter path: ./.venv/bin/python
+2025-04-30 10:35:08.035 [info] > . ./.venv/bin/activate && echo 'e8b39361-0157-4923-80e1-22d70d46dee6' && python ~/.vscode/extensions/ms-python.python-2025.4.0-darwin-arm64/python_files/printEnvVariables.py
+2025-04-30 10:35:08.036 [info] shell: zsh
+2025-04-30 10:35:08.068 [info] > /usr/bin/python3 ~/.vscode/extensions/ms-python.python-2025.4.0-darwin-arm64/python_files/printEnvVariables.py
+2025-04-30 10:35:08.068 [info] shell: zsh
+2025-04-30 10:35:08.091 [info] Prepending environment variable PATH in collection with /Users/tanyamills/.vscode/extensions/ms-python.python-2025.4.0-darwin-arm64/python_files/deactivate/zsh:/Users/tanyamills/Documents/GitHub/HealthCheck/.venv/bin: {"applyAtShellIntegration":true,"applyAtProcessCreation":true}
+2025-04-30 10:35:08.091 [info] Setting environment variable VIRTUAL_ENV in collection to /Users/tanyamills/Documents/GitHub/HealthCheck/.venv {"applyAtShellIntegration":true,"applyAtProcessCreation":true}
+2025-04-30 10:35:08.091 [info] Prepending environment variable PS1 in collection with (.venv)  {"applyAtShellIntegration":true,"applyAtProcessCreation":false}
+2025-04-30 10:35:08.091 [info] Setting environment variable VIRTUAL_ENV_PROMPT in collection to (.venv)  {"applyAtShellIntegration":true,"applyAtProcessCreation":true}
+2025-04-30 10:35:08.091 [info] Send text to terminal: /usr/bin/python3 /Users/tanyamills/.vscode/extensions/ms-python.python-2025.4.0-darwin-arm64/python_files/printEnvVariablesToFile.py /Users/tanyamills/.vscode/extensions/ms-python.python-2025.4.0-darwin-arm64/python_files/deactivate/zsh/envVars.txt
+2025-04-30 10:47:04.122 [info] Discover tests for workspace name: HealthCheck - uri: /Users/tanyamills/Documents/GitHub/HealthCheck/pyproject.toml
+2025-04-30 10:54:14.539 [info] Discover tests for workspace name: HealthCheck - uri: /Users/tanyamills/Documents/GitHub/HealthCheck/pyproject.toml
+2025-04-30 10:54:28.906 [info] Selected workspace /Users/tanyamills/Documents/GitHub/HealthCheck for creating virtual environment.
+2025-04-30 10:54:29.787 [info] Selected interpreter /usr/bin/python3 for creating virtual environment.
+2025-04-30 10:54:32.890 [info] Running installed packages checker:  {
+  id: '/Users/tanyamills/Documents/GitHub/HealthCheck/.venv/bin/python',
+  sysPrefix: '/Users/tanyamills/Documents/GitHub/HealthCheck/.venv',
+  envType: 'Venv',
+  envName: '.venv',
+  envPath: '/Users/tanyamills/Documents/GitHub/HealthCheck/.venv',
+  path: '/Users/tanyamills/Documents/GitHub/HealthCheck/.venv/bin/python',
+  architecture: 3,
+  sysVersion: '3.11.0 (v3.11.0:deaf509e8f, Oct 24 2022, 14:43:23) [Clang 13.0.0 (clang-1300.0.29.30)]',
+  version: {
+    raw: '3.11.0',
+    major: 3,
+    minor: 11,
+    patch: 0,
+    build: [],
+    prerelease: [ 'final', '0' ]
+  },
+  displayName: "Python 3.11.0 ('.venv')",
+  detailedDisplayName: "Python 3.11.0 ('.venv': venv)",
+  type: 'Virtual'
+} /Users/tanyamills/.vscode/extensions/ms-python.python-2025.4.0-darwin-arm64/python_files/installed_check.py /Users/tanyamills/Documents/GitHub/HealthCheck/requirements_local.txt
+2025-04-30 10:54:32.890 [info] > ./.venv/bin/python ~/.vscode/extensions/ms-python.python-2025.4.0-darwin-arm64/python_files/installed_check.py ./requirements_local.txt
+2025-04-30 10:54:32.891 [error] Error while getting installed packages check result:
+ [Error: spawn /Users/tanyamills/Documents/GitHub/HealthCheck/.venv/bin/python ENOENT
+	at ChildProcess._handle.onexit (node:internal/child_process:285:19)
+	at onErrorNT (node:internal/child_process:483:16)
+	at process.processTicksAndRejections (node:internal/process/task_queues:82:21)] {
+  errno: -2,
+  code: 'ENOENT',
+  syscall: 'spawn /Users/tanyamills/Documents/GitHub/HealthCheck/.venv/bin/python',
+  path: '/Users/tanyamills/Documents/GitHub/HealthCheck/.venv/bin/python',
+  spawnargs: [
+    '/Users/tanyamills/.vscode/extensions/ms-python.python-2025.4.0-darwin-arm64/python_files/installed_check.py',
+    '/Users/tanyamills/Documents/GitHub/HealthCheck/requirements_local.txt'
+  ]
+}
+2025-04-30 10:54:37.111 [info] Running Env creation script:  [
+  '/usr/bin/python3',
+  '/Users/tanyamills/.vscode/extensions/ms-python.python-2025.4.0-darwin-arm64/python_files/create_venv.py',
+  '--git-ignore',
+  '--requirements',
+  '/Users/tanyamills/Documents/GitHub/HealthCheck/requirements.local.txt'
+]
+2025-04-30 10:54:37.111 [info] > /usr/bin/python3 ~/.vscode/extensions/ms-python.python-2025.4.0-darwin-arm64/python_files/create_venv.py --git-ignore --requirements ./requirements.local.txt
+2025-04-30 10:54:37.111 [info] cwd: .
+2025-04-30 10:54:37.636 [info] Running: /Library/Developer/CommandLineTools/usr/bin/python3 -m venv .venv
+2025-04-30 10:54:38.915 [info] > ./.venv/bin/python -I ~/.vscode/extensions/ms-python.python-2025.4.0-darwin-arm64/python_files/get_output_via_markers.py ~/.vscode/extensions/ms-python.python-2025.4.0-darwin-arm64/python_files/interpreterInfo.py
+2025-04-30 10:54:38.915 [info] Environments refresh paths discovered: 2 milliseconds
+2025-04-30 10:54:38.981 [info] Environments refresh finished (event): 68 milliseconds
+2025-04-30 10:54:39.040 [info] CREATED_VENV:/Users/tanyamills/Documents/GitHub/HealthCheck/.venv/bin/python
+2025-04-30 10:54:39.040 [info] Creating: /Users/tanyamills/Documents/GitHub/HealthCheck/.venv/.gitignore
+CREATE_VENV.UPGRADING_PIP
+Running: /Users/tanyamills/Documents/GitHub/HealthCheck/.venv/bin/python -m pip install --upgrade pip
+2025-04-30 10:54:39.168 [info] Requirement already satisfied: pip in ./.venv/lib/python3.9/site-packages (21.2.4)
+2025-04-30 10:54:39.261 [info] Collecting pip
+2025-04-30 10:54:39.274 [info]   Using cached pip-25.1-py3-none-any.whl (1.8 MB)
+2025-04-30 10:54:39.294 [info] Installing collected packages: pip
+2025-04-30 10:54:39.294 [info]   Attempting uninstall: pip
+    Found existing installation: pip 21.2.4
+2025-04-30 10:54:39.373 [info]     Uninstalling pip-21.2.4:
+2025-04-30 10:54:39.376 [info]       Successfully uninstalled pip-21.2.4
+2025-04-30 10:54:39.820 [info] Successfully installed pip-25.1
+2025-04-30 10:54:39.841 [info] CREATE_VENV.UPGRADED_PIP
+2025-04-30 10:54:39.842 [info] VENV_INSTALLING_REQUIREMENTS: ['/Users/tanyamills/Documents/GitHub/HealthCheck/requirements.local.txt']
+VENV_INSTALLING_REQUIREMENTS: /Users/tanyamills/Documents/GitHub/HealthCheck/requirements.local.txt
+Running: /Users/tanyamills/Documents/GitHub/HealthCheck/.venv/bin/python -m pip install -r /Users/tanyamills/Documents/GitHub/HealthCheck/requirements.local.txt
+2025-04-30 10:54:40.059 [info] ERROR: Ignored the following yanked versions: 4.2.12
+2025-04-30 10:54:40.059 [info] ERROR: Ignored the following versions that require a different python version: 5.0 Requires-Python >=3.10; 5.0.1 Requires-Python >=3.10; 5.0.10 Requires-Python >=3.10; 5.0.11 Requires-Python >=3.10; 5.0.12 Requires-Python >=3.10; 5.0.13 Requires-Python >=3.10; 5.0.14 Requires-Python >=3.10; 5.0.2 Requires-Python >=3.10; 5.0.3 Requires-Python >=3.10; 5.0.4 Requires-Python >=3.10; 5.0.5 Requires-Python >=3.10; 5.0.6 Requires-Python >=3.10; 5.0.7 Requires-Python >=3.10; 5.0.8 Requires-Python >=3.10; 5.0.9 Requires-Python >=3.10; 5.0a1 Requires-Python >=3.10; 5.0b1 Requires-Python >=3.10; 5.0rc1 Requires-Python >=3.10; 5.1 Requires-Python >=3.10; 5.1.1 Requires-Python >=3.10; 5.1.2 Requires-Python >=3.10; 5.1.3 Requires-Python >=3.10; 5.1.4 Requires-Python >=3.10; 5.1.5 Requires-Python >=3.10; 5.1.6 Requires-Python >=3.10; 5.1.7 Requires-Python >=3.10; 5.1.8 Requires-Python >=3.10; 5.1a1 Requires-Python >=3.10; 5.1b1 Requires-Python >=3.10; 5.1rc1 Requires-Python >=3.10; 5.2 Requires-Python >=3.10; 5.2a1 Requires-Python >=3.10; 5.2b1 Requires-Python >=3.10; 5.2rc1 Requires-Python >=3.10
+2025-04-30 10:54:40.059 [info] ERROR: Could not find a version that satisfies the requirement Django==5.2.0 (from versions: 1.1.3, 1.1.4, 1.2, 1.2.1, 1.2.2, 1.2.3, 1.2.4, 1.2.5, 1.2.6, 1.2.7, 1.3, 1.3.1, 1.3.2, 1.3.3, 1.3.4, 1.3.5, 1.3.6, 1.3.7, 1.4, 1.4.1, 1.4.2, 1.4.3, 1.4.4, 1.4.5, 1.4.6, 1.4.7, 1.4.8, 1.4.9, 1.4.10, 1.4.11, 1.4.12, 1.4.13, 1.4.14, 1.4.15, 1.4.16, 1.4.17, 1.4.18, 1.4.19, 1.4.20, 1.4.21, 1.4.22, 1.5, 1.5.1, 1.5.2, 1.5.3, 1.5.4, 1.5.5, 1.5.6, 1.5.7, 1.5.8, 1.5.9, 1.5.10, 1.5.11, 1.5.12, 1.6, 1.6.1, 1.6.2, 1.6.3, 1.6.4, 1.6.5, 1.6.6, 1.6.7, 1.6.8, 1.6.9, 1.6.10, 1.6.11, 1.7, 1.7.1, 1.7.2, 1.7.3, 1.7.4, 1.7.5, 1.7.6, 1.7.7, 1.7.8, 1.7.9, 1.7.10, 1.7.11, 1.8a1, 1.8b1, 1.8b2, 1.8rc1, 1.8, 1.8.1, 1.8.2, 1.8.3, 1.8.4, 1.8.5, 1.8.6, 1.8.7, 1.8.8, 1.8.9, 1.8.10, 1.8.11, 1.8.12, 1.8.13, 1.8.14, 1.8.15, 1.8.16, 1.8.17, 1.8.18, 1.8.19, 1.9a1, 1.9b1, 1.9rc1, 1.9rc2, 1.9, 1.9.1, 1.9.2, 1.9.3, 1.9.4, 1.9.5, 1.9.6, 1.9.7, 1.9.8, 1.9.9, 1.9.10, 1.9.11, 1.9.12, 1.9.13, 1.10a1, 1.10b1, 1.10rc1, 1.10, 1.10.1, 1.10.2, 1.10.3, 1.10.4, 1.10.5, 1.10.6, 1.10.7, 1.10.8, 1.11a1, 1.11b1, 1.11rc1, 1.11, 1.11.1, 1.11.2, 1.11.3, 1.11.4, 1.11.5, 1.11.6, 1.11.7, 1.11.8, 1.11.9, 1.11.10, 1.11.11, 1.11.12, 1.11.13, 1.11.14, 1.11.15, 1.11.16, 1.11.17, 1.11.18, 1.11.20, 1.11.21, 1.11.22, 1.11.23, 1.11.24, 1.11.25, 1.11.26, 1.11.27, 1.11.28, 1.11.29, 2.0a1, 2.0b1, 2.0rc1, 2.0, 2.0.1, 2.0.2, 2.0.3, 2.0.4, 2.0.5, 2.0.6, 2.0.7, 2.0.8, 2.0.9, 2.0.10, 2.0.12, 2.0.13, 2.1a1, 2.1b1, 2.1rc1, 2.1, 2.1.1, 2.1.2, 2.1.3, 2.1.4, 2.1.5, 2.1.7, 2.1.8, 2.1.9, 2.1.10, 2.1.11, 2.1.12, 2.1.13, 2.1.14, 2.1.15, 2.2a1, 2.2b1, 2.2rc1, 2.2, 2.2.1, 2.2.2, 2.2.3, 2.2.4, 2.2.5, 2.2.6, 2.2.7, 2.2.8, 2.2.9, 2.2.10, 2.2.11, 2.2.12, 2.2.13, 2.2.14, 2.2.15, 2.2.16, 2.2.17, 2.2.18, 2.2.19, 2.2.20, 2.2.21, 2.2.22, 2.2.23, 2.2.24, 2.2.25, 2.2.26, 2.2.27, 2.2.28, 3.0a1, 3.0b1, 3.0rc1, 3.0, 3.0.1, 3.0.2, 3.0.3, 3.0.4, 3.0.5, 3.0.6, 3.0.7, 3.0.8, 3.0.9, 3.0.10, 3.0.11, 3.0.12, 3.0.13, 3.0.14, 3.1a1, 3.1b1, 3.1rc1, 3.1, 3.1.1, 3.1.2, 3.1.3, 3.1.4, 3.1.5, 3.1.6, 3.1.7, 3.1.8, 3.1.9, 3.1.10, 3.1.11, 3.1.12, 3.1.13, 3.1.14, 3.2a1, 3.2b1, 3.2rc1, 3.2, 3.2.1, 3.2.2, 3.2.3, 3.2.4, 3.2.5, 3.2.6, 3.2.7, 3.2.8, 3.2.9, 3.2.10, 3.2.11, 3.2.12, 3.2.13, 3.2.14, 3.2.15, 3.2.16, 3.2.17, 3.2.18, 3.2.19, 3.2.20, 3.2.21, 3.2.22, 3.2.23, 3.2.24, 3.2.25, 4.0a1, 4.0b1, 4.0rc1, 4.0, 4.0.1, 4.0.2, 4.0.3, 4.0.4, 4.0.5, 4.0.6, 4.0.7, 4.0.8, 4.0.9, 4.0.10, 4.1a1, 4.1b1, 4.1rc1, 4.1, 4.1.1, 4.1.2, 4.1.3, 4.1.4, 4.1.5, 4.1.6, 4.1.7, 4.1.8, 4.1.9, 4.1.10, 4.1.11, 4.1.12, 4.1.13, 4.2a1, 4.2b1, 4.2rc1, 4.2, 4.2.1, 4.2.2, 4.2.3, 4.2.4, 4.2.5, 4.2.6, 4.2.7, 4.2.8, 4.2.9, 4.2.10, 4.2.11, 4.2.13, 4.2.14, 4.2.15, 4.2.16, 4.2.17, 4.2.18, 4.2.19, 4.2.20)
+2025-04-30 10:54:40.060 [info] ERROR: No matching distribution found for Django==5.2.0
+2025-04-30 10:54:40.083 [info] Traceback (most recent call last):
+  File "/Users/tanyamills/.vscode/extensions/ms-python.python-2025.4.0-darwin-arm64/python_files/create_venv.py", line 96, in run_process
+2025-04-30 10:54:40.083 [info]     subprocess.run(args, cwd=os.getcwd(), check=True)  # noqa: PTH109
+  File "/Library/Developer/CommandLineTools/Library/Frameworks/Python3.framework/Versions/3.9/lib/python3.9/subprocess.py", line 528, in run
+2025-04-30 10:54:40.083 [info]     raise CalledProcessError(retcode, process.args,
+subprocess.CalledProcessError
+2025-04-30 10:54:40.083 [info] : Command '['/Users/tanyamills/Documents/GitHub/HealthCheck/.venv/bin/python', '-m', 'pip', 'install', '-r', '/Users/tanyamills/Documents/GitHub/HealthCheck/requirements.local.txt']' returned non-zero exit status 1.
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/Users/tanyamills/.vscode/extensions/ms-python.python-2025.4.0-darwin-arm64/python_files/create_venv.py", line 262, in <module>
+2025-04-30 10:54:40.083 [info]     main(sys.argv[1:])
+  File "/Users/tanyamills/.vscode/extensions/ms-python.python-2025.4.0-darwin-arm64/python_files/create_venv.py", line 254, in main
+2025-04-30 10:54:40.083 [info]     install_requirements(venv_path, requirements)
+  File "/Users/tanyamills/.vscode/extensions/ms-python.python-2025.4.0-darwin-arm64/python_files/create_venv.py", line 116, in install_requirements
+2025-04-30 10:54:40.083 [info]     run_process(
+  File "/Users/tanyamills/.vscode/extensions/ms-python.python-2025.4.0-darwin-arm64/python_files/create_venv.py", line 98, in run_process
+    raise VenvError(error_message) from exc
+__main__.VenvError: CREATE_VENV.PIP_FAILED_INSTALL_REQUIREMENTS
+2025-04-30 10:54:40.089 [error] Error while running venv creation script:  CREATE_VENV.PIP_FAILED_INSTALL_REQUIREMENTS
+2025-04-30 10:54:40.089 [error] CREATE_VENV.PIP_FAILED_INSTALL_REQUIREMENTS
+2025-04-30 10:54:40.195 [info] > ./.venv/bin/python -I ~/.vscode/extensions/ms-python.python-2025.4.0-darwin-arm64/python_files/get_output_via_markers.py ~/.vscode/extensions/ms-python.python-2025.4.0-darwin-arm64/python_files/interpreterInfo.py
+2025-04-30 10:54:40.195 [info] Environments refresh paths discovered: 2 milliseconds
+2025-04-30 10:54:40.260 [info] Environments refresh finished (event): 67 milliseconds

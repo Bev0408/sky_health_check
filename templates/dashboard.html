@@ -1,0 +1,212 @@
+{% extends 'base.html' %}
+
+{% block title %}Dashboard - Health Check Application{% endblock %}
+
+{% block content %}
+<div class="row mb-4">
+    <div class="col-md-12">
+        <div class="card shadow">
+            <div class="card-body">
+                <h2 class="card-title">Welcome, {{ user.full_name|default:user.username }}!</h2>
+                <p class="card-text text-muted">
+                    {{ user.get_role_display }} {% if user.department %}• {{ user.department.name }}{% endif %}
+                </p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row mb-4">
+    <!-- Statistics Cards -->
+    <div class="col-md-3">
+        <div class="card shadow text-white bg-primary mb-3">
+            <div class="card-body">
+                <div class="d-flex justify-content-between align-items-start">
+                    <div>
+                        <h6 class="card-title">My Teams</h6>
+                        <h2 class="mb-0">{{ user.teams.count }}</h2>
+                    </div>
+                    <i class="fas fa-users fa-2x"></i>
+                </div>
+            </div>
+            <div class="card-footer bg-transparent border-top-0">
+                <a href="{% url 'team_list' %}" class="text-white">View all teams <i class="fas fa-arrow-right"></i></a>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-3">
+        <div class="card shadow text-white bg-success mb-3">
+            <div class="card-body">
+                <div class="d-flex justify-content-between align-items-start">
+                    <div>
+                        <h6 class="card-title">Active Health Checks</h6>
+                        <h2 class="mb-0">{{ active_health_checks }}</h2>
+                    </div>
+                    <i class="fas fa-clipboard-check fa-2x"></i>
+                </div>
+            </div>
+            <div class="card-footer bg-transparent border-top-0">
+                <a href="{% url 'health_check_list' %}" class="text-white">View all health checks <i class="fas fa-arrow-right"></i></a>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-3">
+        <div class="card shadow text-white bg-warning mb-3">
+            <div class="card-body">
+                <div class="d-flex justify-content-between align-items-start">
+                    <div>
+                        <h6 class="card-title">Pending Responses</h6>
+                        <h2 class="mb-0">{{ pending_responses }}</h2>
+                    </div>
+                    <i class="fas fa-exclamation-circle fa-2x"></i>
+                </div>
+            </div>
+            <div class="card-footer bg-transparent border-top-0">
+                <a href="{% url 'health_check_list' %}" class="text-white">View pending <i class="fas fa-arrow-right"></i></a>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-3">
+        <div class="card shadow text-white bg-info mb-3">
+            <div class="card-body">
+                <div class="d-flex justify-content-between align-items-start">
+                    <div>
+                        <h6 class="card-title">Health Check Categories</h6>
+                        <h2 class="mb-0">{{ category_count }}</h2>
+                    </div>
+                    <i class="fas fa-th-list fa-2x"></i>
+                </div>
+            </div>
+            <div class="card-footer bg-transparent border-top-0">
+                <a href="#" class="text-white">View categories <i class="fas fa-arrow-right"></i></a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row mb-4">
+    <!-- Your Teams -->
+    <div class="col-md-6">
+        <div class="card shadow h-100">
+            <div class="card-header d-flex justify-content-between align-items-center">
+                <h5 class="mb-0">Your Teams</h5>
+                <a href="{% url 'team_list' %}" class="btn btn-sm btn-primary">View All</a>
+            </div>
+            <div class="card-body">
+                {% if user.teams.exists %}
+                <div class="list-group">
+                    {% for team in user.teams.all|slice:":5" %}
+                    <a href="{% url 'team_detail' pk=team.pk %}" class="list-group-item list-group-item-action d-flex justify-content-between align-items-center">
+                        <div>
+                            <strong>{{ team.name }}</strong>
+                            <small class="d-block text-muted">{{ team.department.name }}</small>
+                        </div>
+                        <span class="badge bg-primary rounded-pill">{{ team.members.count }} members</span>
+                    </a>
+                    {% endfor %}
+                </div>
+                {% else %}
+                <div class="alert alert-info">
+                    <i class="fas fa-info-circle me-2"></i> You are not a member of any team yet.
+                </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+
+    <!-- Health Checks Requiring Your Response -->
+    <div class="col-md-6">
+        <div class="card shadow h-100">
+            <div class="card-header d-flex justify-content-between align-items-center">
+                <h5 class="mb-0">Pending Health Checks</h5>
+                <a href="{% url 'health_check_list' %}" class="btn btn-sm btn-primary">View All</a>
+            </div>
+            <div class="card-body">
+                {% if pending_health_checks %}
+                <div class="list-group">
+                    {% for session in pending_health_checks %}
+                    <a href="{% url 'participate_session' pk=session.id %}" class="list-group-item list-group-item-action d-flex justify-content-between align-items-center">
+                        <div>
+                            <strong>{{ session.health_check.title }}</strong>
+                            <small class="d-block text-muted">{{ session.team.name }} • Due: {{ session.end_date|date:"M d, Y" }}</small>
+                        </div>
+                        <span class="badge bg-warning rounded-pill">Pending</span>
+                    </a>
+                    {% endfor %}
+                </div>
+                {% else %}
+                <div class="alert alert-success">
+                    <i class="fas fa-check-circle me-2"></i> You have no pending health checks.
+                </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Recent Activity -->
+<div class="row">
+    <div class="col-md-12">
+        <div class="card shadow">
+            <div class="card-header d-flex justify-content-between align-items-center">
+                <h5 class="mb-0">Recent Health Checks</h5>
+                <a href="{% url 'health_check_list' %}" class="btn btn-sm btn-primary">View All</a>
+            </div>
+            <div class="card-body">
+                {% if recent_health_checks %}
+                <div class="table-responsive">
+                    <table class="table table-hover">
+                        <thead>
+                            <tr>
+                                <th>Team</th>
+                                <th>Title</th>
+                                <th>Start Date</th>
+                                <th>End Date</th>
+                                <th>Completion</th>
+                                <th>Status</th>
+                                <th></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for session in recent_health_checks %}
+                            <tr>
+                                <td>{{ session.team.name }}</td>
+                                <td>{{ session.health_check.title }}</td>
+                                <td>{{ session.start_date|date:"M d, Y" }}</td>
+                                <td>{{ session.end_date|date:"M d, Y" }}</td>
+                                <td>
+                                    <div class="progress" style="height: 10px;">
+                                        <div class="progress-bar bg-success" role="progressbar" style="width: {{ session.get_completion_percentage }}%"></div>
+                                    </div>
+                                    <small>{{ session.get_completion_percentage }}%</small>
+                                </td>
+                                <td>
+                                    {% if session.end_date < now %}
+                                    <span class="badge bg-secondary">Completed</span>
+                                    {% else %}
+                                    <span class="badge bg-success">Active</span>
+                                    {% endif %}
+                                </td>
+                                <td>
+                                    <a href="{% url 'session_detail' pk=session.id %}" class="btn btn-sm btn-outline-primary">
+                                        <i class="fas fa-eye"></i>
+                                    </a>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+                {% else %}
+                <div class="alert alert-info">
+                    <i class="fas fa-info-circle me-2"></i> No recent health checks found.
+                </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

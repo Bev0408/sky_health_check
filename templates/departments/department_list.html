@@ -1,0 +1,109 @@
+{% extends 'base.html' %}
+
+{% block title %}Departments{% endblock %}
+
+{% block content %}
+<div class="row mb-4">
+    <div class="col-md-8">
+        <h1>Departments</h1>
+        <p class="text-muted">Manage departments and view their teams</p>
+    </div>
+    <div class="col-md-4 text-end">
+        {% if perms.departments.add_department or user.is_senior_manager or user.is_admin %}
+        <a href="{% url 'create_department' %}" class="btn btn-primary">
+            <i class="fas fa-plus me-2"></i> Create Department
+        </a>
+        {% endif %}
+    </div>
+</div>
+
+{% if messages %}
+<div class="row">
+    <div class="col-12">
+        {% for message in messages %}
+        <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+            {{ message }}
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+{% endif %}
+
+<div class="row">
+    {% if departments %}
+    {% for department in departments %}
+    <div class="col-md-6 col-lg-4 mb-4">
+        <div class="card h-100">
+            <div class="card-header d-flex justify-content-between align-items-center">
+                <h5 class="card-title mb-0">{{ department.name }}</h5>
+                <div class="dropdown">
+                    <button class="btn btn-sm btn-outline-secondary dropdown-toggle" type="button" id="deptDropdown{{ department.id }}" data-bs-toggle="dropdown" aria-expanded="false">
+                        <i class="fas fa-ellipsis-v"></i>
+                    </button>
+                    <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="deptDropdown{{ department.id }}">
+                        <li><a class="dropdown-item" href="{% url 'department_detail' department.id %}">
+                            <i class="fas fa-info-circle me-2"></i> View Details
+                        </a></li>
+                        {% if perms.departments.change_department or user.is_senior_manager or user.is_admin %}
+                        <li><a class="dropdown-item" href="{% url 'edit_department' department.id %}">
+                            <i class="fas fa-edit me-2"></i> Edit Department
+                        </a></li>
+                        {% endif %}
+                        {% if perms.departments.delete_department or user.is_senior_manager or user.is_admin %}
+                        <li><hr class="dropdown-divider"></li>
+                        <li><a class="dropdown-item text-danger" href="{% url 'delete_department' department.id %}">
+                            <i class="fas fa-trash-alt me-2"></i> Delete Department
+                        </a></li>
+                        {% endif %}
+                    </ul>
+                </div>
+            </div>
+            <div class="card-body">
+                {% if department.description %}
+                <div class="mb-3">
+                    <small class="text-muted d-block">Description:</small>
+                    <div>{{ department.description|truncatewords:30 }}</div>
+                </div>
+                {% endif %}
+                <div class="d-flex justify-content-between mb-3">
+                    <div>
+                        <small class="text-muted d-block">Teams:</small>
+                        <div>{{ department.teams.count }} team{{ department.teams.count|pluralize }}</div>
+                    </div>
+                    <div>
+                        <small class="text-muted d-block">Members:</small>
+                        <div>{{ department.users.count }} member{{ department.users.count|pluralize }}</div>
+                    </div>
+                </div>
+                <div>
+                    <small class="text-muted d-block">Department Leader:</small>
+                    <div>
+                        {% with leaders=department.users.filter role='department_leader' %}
+                            {% if leaders.exists %}
+                                {{ leaders.first.full_name }}
+                            {% else %}
+                                <span class="text-muted">No leader assigned</span>
+                            {% endif %}
+                        {% endwith %}
+                    </div>
+                </div>
+            </div>
+            <div class="card-footer">
+                <a href="{% url 'department_detail' department.id %}" class="btn btn-sm btn-outline-primary">
+                    <i class="fas fa-eye me-1"></i> View Department
+                </a>
+            </div>
+        </div>
+    </div>
+    {% endfor %}
+    {% else %}
+    <div class="col-12">
+        <div class="alert alert-info" role="alert">
+            <h4 class="alert-heading">No Departments Found</h4>
+            <p>There are no departments available to view. {% if perms.departments.add_department or user.is_senior_manager or user.is_admin %}You can create a new department using the button above.{% endif %}</p>
+        </div>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}

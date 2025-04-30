@@ -1,0 +1,88 @@
+{% extends "base.html" %}
+
+{% block title %}SKY Health - {{ title }}{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h1 class="h3 mb-0">{{ title }}</h1>
+    <a href="{{ url_for('teams') }}" class="btn btn-outline-secondary">
+        <i class="fas fa-arrow-left me-1"></i> Back to Teams
+    </a>
+</div>
+
+<div class="card shadow-sm">
+    <div class="card-body">
+        <form method="POST" action="{{ request.path }}">
+            {{ form.hidden_tag() }}
+            
+            <div class="row">
+                <div class="col-md-6 mb-3">
+                    <label for="name" class="form-label">Team Name</label>
+                    {{ form.name(class="form-control") }}
+                    {% if form.name.errors %}
+                        <div class="text-danger small mt-1">
+                            {% for error in form.name.errors %}
+                                {{ error }}
+                            {% endfor %}
+                        </div>
+                    {% endif %}
+                </div>
+                
+                <div class="col-md-6 mb-3">
+                    <label for="department" class="form-label">Department</label>
+                    {{ form.department(class="form-select") }}
+                    {% if form.department.errors %}
+                        <div class="text-danger small mt-1">
+                            {% for error in form.department.errors %}
+                                {{ error }}
+                            {% endfor %}
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+            
+            <div class="mb-4">
+                <label for="description" class="form-label">Description</label>
+                {{ form.description(class="form-control", rows=3) }}
+                {% if form.description.errors %}
+                    <div class="text-danger small mt-1">
+                        {% for error in form.description.errors %}
+                            {{ error }}
+                        {% endfor %}
+                    </div>
+                {% endif %}
+            </div>
+            
+            <div class="mb-3">
+                <label for="team_leader" class="form-label">Team Leader</label>
+                {{ form.team_leader(class="form-select") }}
+                {% if form.team_leader.errors %}
+                    <div class="text-danger small mt-1">
+                        {% for error in form.team_leader.errors %}
+                            {{ error }}
+                        {% endfor %}
+                    </div>
+                {% endif %}
+            </div>
+            
+            <div class="mb-4">
+                <label for="members" class="form-label">Team Members</label>
+                {{ form.members(class="form-select", multiple="multiple", size="6") }}
+                <small class="text-muted">Hold Ctrl (or Cmd on Mac) to select multiple members</small>
+                {% if form.members.errors %}
+                    <div class="text-danger small mt-1">
+                        {% for error in form.members.errors %}
+                            {{ error }}
+                        {% endfor %}
+                    </div>
+                {% endif %}
+            </div>
+            
+            <div class="d-flex justify-content-end">
+                <a href="{{ url_for('teams') }}" class="btn btn-outline-secondary me-2">Cancel</a>
+                {{ form.submit(class="btn btn-primary") }}
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}

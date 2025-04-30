@@ -1,0 +1,192 @@
+{% extends "base.html" %}
+
+{% block title %}SKY Health - Create Health Check{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h1 class="h3 mb-0">Create Health Check</h1>
+    <a href="{{ url_for('health_checks') }}" class="btn btn-outline-secondary">
+        <i class="fas fa-arrow-left me-1"></i> Back to Health Checks
+    </a>
+</div>
+
+<div class="row">
+    <div class="col-lg-8">
+        <div class="card shadow-sm mb-4">
+            <div class="card-header bg-white">
+                <h5 class="mb-0">Health Check Details</h5>
+                <p class="text-muted small mb-0">Provide the basic information for this health check</p>
+            </div>
+            <div class="card-body">
+                <form method="POST" action="{{ url_for('create_health_check') }}" id="health-check-form">
+                    {{ form.hidden_tag() }}
+                    
+                    <div class="mb-3">
+                        <label for="title" class="form-label">Title</label>
+                        {{ form.title(class="form-control", placeholder="e.g., Sprint 23 Health Check") }}
+                        {% if form.title.errors %}
+                            <div class="text-danger small mt-1">
+                                {% for error in form.title.errors %}
+                                    {{ error }}
+                                {% endfor %}
+                            </div>
+                        {% endif %}
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="description" class="form-label">Description (Optional)</label>
+                        {{ form.description(class="form-control", rows=3, placeholder="Provide additional context for participants...") }}
+                        {% if form.description.errors %}
+                            <div class="text-danger small mt-1">
+                                {% for error in form.description.errors %}
+                                    {{ error }}
+                                {% endfor %}
+                            </div>
+                        {% endif %}
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="team" class="form-label">Team</label>
+                        {{ form.team(class="form-select") }}
+                        {% if form.team.errors %}
+                            <div class="text-danger small mt-1">
+                                {% for error in form.team.errors %}
+                                    {{ error }}
+                                {% endfor %}
+                            </div>
+                        {% endif %}
+                    </div>
+                    
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label for="start_date" class="form-label">Start Date</label>
+                            {{ form.start_date(class="form-control datepicker", type="date") }}
+                            {% if form.start_date.errors %}
+                                <div class="text-danger small mt-1">
+                                    {% for error in form.start_date.errors %}
+                                        {{ error }}
+                                    {% endfor %}
+                                </div>
+                            {% endif %}
+                        </div>
+                        
+                        <div class="col-md-6 mb-3">
+                            <label for="end_date" class="form-label">End Date</label>
+                            {{ form.end_date(class="form-control datepicker", type="date") }}
+                            {% if form.end_date.errors %}
+                                <div class="text-danger small mt-1">
+                                    {% for error in form.end_date.errors %}
+                                        {{ error }}
+                                    {% endfor %}
+                                </div>
+                            {% endif %}
+                        </div>
+                    </div>
+                    
+                    <div class="mb-4">
+                        <label class="form-label">Team Members</label>
+                        <div class="d-flex justify-content-between align-items-center mb-2">
+                            <span class="small text-muted" id="selected-count">0 of 0 selected</span>
+                            <button type="button" class="btn btn-sm btn-outline-primary" id="select-all-members">
+                                Select All
+                            </button>
+                        </div>
+                        {{ form.participants(class="form-select", multiple="multiple", size="6") }}
+                        <small class="text-muted">Hold Ctrl (or Cmd on Mac) to select multiple members</small>
+                        {% if form.participants.errors %}
+                            <div class="text-danger small mt-1">
+                                {% for error in form.participants.errors %}
+                                    {{ error }}
+                                {% endfor %}
+                            </div>
+                        {% endif %}
+                    </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-lg-4">
+        <div class="card shadow-sm mb-4">
+            <div class="card-header bg-white">
+                <h5 class="mb-0">Settings</h5>
+                <p class="text-muted small mb-0">Configure how this health check will operate</p>
+            </div>
+            <div class="card-body">
+                <div class="mb-3">
+                    <div class="form-check form-switch">
+                        {{ form.anonymous(class="form-check-input") }}
+                        <label class="form-check-label" for="anonymous">Anonymous Voting</label>
+                    </div>
+                    <small class="text-muted">Individual votes will not be linked to participants, encouraging honest feedback.</small>
+                </div>
+                
+                <div class="mb-3">
+                    <div class="form-check form-switch">
+                        {{ form.send_reminders(class="form-check-input") }}
+                        <label class="form-check-label" for="send_reminders">Send Reminders</label>
+                    </div>
+                    <small class="text-muted">Automatically notify participants who haven't completed the health check.</small>
+                </div>
+            </div>
+        </div>
+        
+        <div class="card shadow-sm">
+            <div class="card-header bg-white">
+                <h5 class="mb-0">Preview</h5>
+            </div>
+            <div class="card-body">
+                <div class="mb-3">
+                    <h6 class="text-center" id="preview-title">New Health Check</h6>
+                    <p class="text-muted small text-center">
+                        <span id="preview-date">Not configured</span>
+                        <span class="badge bg-secondary ms-2">Draft</span>
+                    </p>
+                </div>
+                
+                <div class="d-grid">
+                    {{ form.submit(class="btn btn-primary btn-lg") }}
+                </div>
+            </div>
+        </div>
+    </div>
+    </form>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Update preview when title changes
+        const titleInput = document.getElementById('title');
+        const previewTitle = document.getElementById('preview-title');
+        if (titleInput && previewTitle) {
+            titleInput.addEventListener('input', function() {
+                previewTitle.textContent = titleInput.value || 'New Health Check';
+            });
+        }
+        
+        // Update preview dates when dates change
+        const startDateInput = document.getElementById('start_date');
+        const endDateInput = document.getElementById('end_date');
+        const previewDate = document.getElementById('preview-date');
+        
+        function updatePreviewDate() {
+            if (startDateInput.value && endDateInput.value) {
+                const startDate = new Date(startDateInput.value);
+                const endDate = new Date(endDateInput.value);
+                previewDate.textContent = `${startDate.toLocaleDateString()} - ${endDate.toLocaleDateString()}`;
+            } else {
+                previewDate.textContent = 'Not configured';
+            }
+        }
+        
+        if (startDateInput && endDateInput && previewDate) {
+            startDateInput.addEventListener('change', updatePreviewDate);
+            endDateInput.addEventListener('change', updatePreviewDate);
+            
+            // Initial update
+            updatePreviewDate();
+        }
+    });
+</script>
+{% endblock %}

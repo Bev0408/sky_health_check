@@ -1,172 +1,189 @@
-# Sky Health Check
+# Team Health Check Application
 
-A Django web application for team health checks with user authentication, profile management, and health check voting system.
+A comprehensive web-based application for conducting and visualizing software team health checks using the Spotify Health Check methodology. The application provides advanced analytics, secure authentication, and interactive reporting tools for technical teams.
 
-## Project Overview
+## Features
 
-Sky Health Check is a web application that allows engineering teams to conduct health checks by voting on various health cards (e.g., Codebase Health, Team Morale). The application includes:
+- **Role-Based User Management**: Five distinct user roles with appropriate permissions
+- **Department & Team Structure**: Hierarchical organization with departments and teams
+- **Health Check Templates**: Customizable templates based on Spotify's Health Check model
+- **Anonymous Voting**: Team members can submit anonymous responses
+- **Advanced Analytics**: Interactive charts and visualizations of team health metrics
+- **Historical Tracking**: Track team health trends over time
+- **Comparative Analysis**: Compare health metrics across teams and departments
+- **Responsive Design**: Works on desktop and mobile devices
 
-- User registration and authentication
-- Profile management
-- Dashboard for health check data
-- Voting system for health cards
+## Tech Stack
 
-## Getting Started
+- **Backend**: Django 5.2
+- **Database**: SQLite (local database)
+- **Frontend**: Bootstrap 5, JavaScript, Chart.js
+- **Authentication**: Custom user model with role-based permissions
+- **Static Files**: WhiteNoise for static file serving
+- **Deployment**: Replit environment compatible
+
+## Installation Instructions
 
 ### Prerequisites
 
-- Python 3.8 or higher
+- Python 3.11+
 - Git
 
-### Setup Instructions
+### Local Setup (macOS/Linux)
 
 1. **Clone the repository**
-
 ```bash
-git clone git@github.com:Bev0408/sky_health_check.git
-cd sky_health_check
+git clone <your-repository-url>
+cd health-check-application
 ```
 
 2. **Create and activate a virtual environment**
-
 ```bash
-# On macOS/Linux
 python -m venv venv
 source venv/bin/activate
+```
 
-# On Windows
+3. **Install dependencies**
+```bash
+pip install -r requirements.local.txt
+```
+
+4. **Set up environment variables**
+```bash
+# Set Django secret key
+export SESSION_SECRET="your-secret-key-for-django"
+```
+
+5. **Run database migrations**
+```bash
+python manage.py migrate
+```
+
+6. **Create superuser**
+```bash
+python manage.py createsuperuser
+```
+
+7. **Generate test data**
+```bash
+python generate_complete_data.py
+```
+
+8. **Collect static files**
+```bash
+python manage.py collectstatic
+```
+
+9. **Run the development server**
+```bash
+python manage.py runserver
+```
+
+10. **Access the application**
+   - Open your browser and navigate to `http://127.0.0.1:8000`
+   - Access admin panel at `http://127.0.0.1:8000/admin/`
+
+### Local Setup (Windows)
+
+1. **Clone the repository**
+```bash
+git clone <your-repository-url>
+cd health-check-application
+```
+
+2. **Create and activate a virtual environment**
+```bash
 python -m venv venv
 venv\Scripts\activate
 ```
 
 3. **Install dependencies**
-
 ```bash
-pip install django
+pip install -r requirements.local.txt
 ```
 
-4. **Apply database migrations**
+4. **Set up environment variables**
+```bash
+# Set Django secret key
+set SESSION_SECRET=your-secret-key-for-django
+```
 
+5. **Run database migrations**
 ```bash
 python manage.py migrate
 ```
 
-5. **Run the development server**
-
-```bash
-python manage.py runserver
-```
-
-6. **Access the application**
-
-Open your browser and navigate to: http://localhost:8000
-
-## Application Structure
-
-The application is organized into the following components:
-
-- **config/**: Django project configuration
-- **health_app/**: Main application module
-  - **models.py**: Database models
-  - **views.py**: View controllers
-  - **forms.py**: Form definitions
-  - **urls.py**: URL routing
-  - **templates/**: HTML templates
-  - **templatetags/**: Custom template tags
-
-## Models
-
-The application uses the following primary models:
-
-- **User**: Django's built-in user model
-- **Profile**: Extends User with role and team information
-- **Department**: Represents departments in the organization
-- **Team**: Represents teams within departments
-- **Session**: Represents a health check session period
-- **HealthCard**: Represents a health check category/area
-- **Vote**: Represents a user's vote for a specific card in a session
-
-## Features
-
-- **User Authentication**
-  - Registration (sign up)
-  - Login/logout
-  - Password change
-
-- **Profile Management**
-  - View profile information
-  - Edit profile details
-  - Change password
-
-- **Health Check Functionality** (To be implemented)
-  - View health cards
-  - Submit votes
-  - View results
-  
-## Contribution Workflow
-
-1. **Get the latest changes**
-
-```bash
-git pull origin master
-```
-
-2. **Create a new branch for your feature**
-
-```bash
-git checkout -b feature-name
-```
-
-3. **Make your changes and commit them**
-
-```bash
-git add .
-git commit -m "Description of changes"
-```
-
-4. **Push your branch to GitHub**
-
-```bash
-git push origin feature-name
-```
-
-5. **Create a Pull Request on GitHub**
-
-Navigate to the repository on GitHub and create a pull request from your feature branch to master.
-
-## Testing
-
-To run tests:
-
-```bash
-python manage.py test
-```
-
-## Development Environments
-
-The project supports three environments:
-- Development (default)
-- Test
-- Production
-
-## Useful Django Commands
-
-- **Create a superuser** (admin account)
+6. **Create superuser**
 ```bash
 python manage.py createsuperuser
 ```
 
-- **Make migrations after model changes**
+7. **Generate test data**
 ```bash
-python manage.py makemigrations
+python generate_complete_data.py
 ```
 
-- **Shell access for testing**
-```bash 
-python manage.py shell
+8. **Collect static files**
+```bash
+python manage.py collectstatic
 ```
 
-## Resources
+9. **Run the development server**
+```bash
+python manage.py runserver
+```
 
-- [Django Documentation](https://docs.djangoproject.com/)
-- [Bootstrap Documentation](https://getbootstrap.com/docs/)
+10. **Access the application**
+   - Open your browser and navigate to `http://127.0.0.1:8000`
+   - Access admin panel at `http://127.0.0.1:8000/admin/`
+
+## Default Login Credentials
+
+After running the data generation script, you can log in with these credentials:
+
+- **Administrator**:
+  - Username: admin
+  - Password: admin123
+
+- **Team Leader**:
+  - Username: teamlead1
+  - Password: password123
+
+- **Engineer**:
+  - Username: engineer1
+  - Password: password123
+
+## Application Structure
+
+- **accounts**: User authentication and profile management
+- **departments**: Department management
+- **teams**: Team and team member management
+- **health_checks**: Health check templates, sessions, and responses
+- **analytics**: Data visualization and analytics dashboard
+
+## Database Schema
+
+The application uses SQLite (a local file-based database) with the following key models:
+- User (custom user model with role-based permissions)
+- Department (organizational unit)
+- Team (belongs to a department)
+- TeamMember (links users to teams)
+- HealthCheckCategory, HealthCheckQuestion (question framework)
+- HealthCheck (templates), HealthCheckSession (instances)
+- HealthCheckResponse (user responses to questions)
+
+## Role-Based Access
+
+- **Engineers**: Participate in health checks for their teams
+- **Team Leaders**: Create and manage health checks for their teams
+- **Department Leaders**: View all teams and health checks in their department
+- **Senior Managers**: View all departments, teams, and health checks
+- **Administrators**: Full access to all system features
+
+## Project Documentation
+
+For comprehensive documentation of the project architecture, code structure, and functionality, see the `project_documentation.txt` file.
+
+## License
+
+[MIT License](LICENSE)

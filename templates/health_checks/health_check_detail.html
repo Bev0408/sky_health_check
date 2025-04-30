@@ -1,0 +1,120 @@
+{% extends 'base.html' %}
+
+{% block title %}{{ health_check.name }}{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-12">
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="{% url 'dashboard' %}">Dashboard</a></li>
+                <li class="breadcrumb-item"><a href="{% url 'health_check_list' %}">Health Checks</a></li>
+                <li class="breadcrumb-item active">{{ health_check.name }}</li>
+            </ol>
+        </nav>
+    </div>
+</div>
+
+<div class="row mb-4">
+    <div class="col-md-8">
+        <h1>{{ health_check.name }}</h1>
+        {% if health_check.is_template %}
+        <span class="badge bg-info">Template</span>
+        {% endif %}
+    </div>
+    <div class="col-md-4 text-end">
+        {% if user.is_team_leader or user.is_department_leader or user.is_admin %}
+        <a href="{% url 'edit_health_check' health_check.id %}" class="btn btn-primary">
+            <i class="fas fa-edit me-1"></i> Edit
+        </a>
+        <a href="{% url 'delete_health_check' health_check.id %}" class="btn btn-danger">
+            <i class="fas fa-trash me-1"></i> Delete
+        </a>
+        {% endif %}
+        <a href="{% url 'create_session' %}?health_check={{ health_check.id }}" class="btn btn-success">
+            <i class="fas fa-play me-1"></i> Start Session
+        </a>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-8">
+        <div class="card mb-4">
+            <div class="card-header">
+                <h5 class="card-title mb-0">Details</h5>
+            </div>
+            <div class="card-body">
+                <p>
+                    <strong>Created By:</strong> 
+                    {{ health_check.created_by.full_name|default:health_check.created_by.username }}
+                </p>
+                <p>
+                    <strong>Created At:</strong> 
+                    {{ health_check.created_at|date:"F j, Y, P" }}
+                </p>
+                <p>
+                    <strong>Description:</strong><br>
+                    {% if health_check.description %}
+                    {{ health_check.description|linebreaks }}
+                    {% else %}
+                    <em>No description provided</em>
+                    {% endif %}
+                </p>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-4">
+        <div class="card mb-4">
+            <div class="card-header">
+                <h5 class="card-title mb-0">Categories</h5>
+            </div>
+            <div class="card-body">
+                {% if health_check.categories.exists %}
+                <ul class="list-group">
+                    {% for category in health_check.categories.all %}
+                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                        {{ category.name }}
+                        <span class="badge bg-primary rounded-pill">{{ category.questions.count }} questions</span>
+                    </li>
+                    {% endfor %}
+                </ul>
+                {% else %}
+                <p class="text-muted">No categories</p>
+                {% endif %}
+            </div>
+        </div>
+        
+        <div class="card">
+            <div class="card-header">
+                <h5 class="card-title mb-0">Sessions</h5>
+            </div>
+            <div class="card-body">
+                {% if health_check.sessions.exists %}
+                <ul class="list-group">
+                    {% for session in health_check.sessions.all %}
+                    <li class="list-group-item">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div>
+                                <strong>{{ session.team.name }}</strong>
+                                <div class="text-muted small">
+                                    {{ session.start_date|date:"M d, Y" }}
+                                    {% if session.end_date %}
+                                    - {{ session.end_date|date:"M d, Y" }}
+                                    {% endif %}
+                                </div>
+                            </div>
+                            <a href="{% url 'session_detail' session.id %}" class="btn btn-sm btn-outline-primary">View</a>
+                        </div>
+                    </li>
+                    {% endfor %}
+                </ul>
+                {% else %}
+                <p class="text-muted">No sessions conducted yet</p>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}

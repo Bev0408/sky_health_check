@@ -1,0 +1,75 @@
+{% extends 'base.html' %}
+
+{% block title %}Confirm Delete - {{ team.name }}{% endblock %}
+
+{% block content %}
+<div class="row mb-4">
+    <div class="col-md-8">
+        <h1>Confirm Delete</h1>
+        <p class="text-muted">Are you sure you want to delete this team?</p>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-6">
+        <div class="card shadow">
+            <div class="card-header bg-danger text-white">
+                <h5 class="mb-0">Delete Team: {{ team.name }}</h5>
+            </div>
+            <div class="card-body">
+                <div class="alert alert-warning">
+                    <h5 class="alert-heading">Warning!</h5>
+                    <p>You are about to delete the team "{{ team.name }}".</p>
+                    <hr>
+                    <p class="mb-0">This action will also delete:</p>
+                    <ul>
+                        <li>All team memberships ({{ team.team_memberships.count }} members)</li>
+                        <li>All health check sessions associated with this team</li>
+                    </ul>
+                    <p class="mb-0">This action cannot be undone.</p>
+                </div>
+
+                <form method="post">
+                    {% csrf_token %}
+                    <div class="d-flex justify-content-between">
+                        <a href="{% url 'team_detail' team.id %}" class="btn btn-outline-secondary">
+                            <i class="fas fa-times me-2"></i> Cancel
+                        </a>
+                        <button type="submit" class="btn btn-danger">
+                            <i class="fas fa-trash-alt me-2"></i> Delete Team
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-6">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="mb-0">Team Information</h5>
+            </div>
+            <div class="card-body">
+                <table class="table table-bordered">
+                    <tr>
+                        <th style="width: 30%">Name:</th>
+                        <td>{{ team.name }}</td>
+                    </tr>
+                    <tr>
+                        <th>Department:</th>
+                        <td>{{ team.department.name|default:"No Department" }}</td>
+                    </tr>
+                    <tr>
+                        <th>Leader:</th>
+                        <td>{{ team.leader.full_name|default:"No leader assigned" }}</td>
+                    </tr>
+                    <tr>
+                        <th>Created:</th>
+                        <td>{{ team.created_at|date:"F j, Y" }}</td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

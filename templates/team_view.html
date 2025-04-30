@@ -1,0 +1,168 @@
+{% extends "base.html" %}
+
+{% block title %}SKY Health - Team View{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h1 class="h3 mb-0">Team View</h1>
+    {% if current_user.is_team_leader %}
+    <a href="{{ url_for('create_team') }}" class="btn btn-primary">
+        <i class="fas fa-plus me-1"></i> Create Team
+    </a>
+    {% endif %}
+</div>
+
+<div class="row">
+    <div class="col-md-3">
+        <div class="card shadow-sm mb-4">
+            <div class="card-header bg-white">
+                <h5 class="mb-0">Teams</h5>
+            </div>
+            <div class="list-group list-group-flush">
+                {% for team in teams %}
+                <a href="{{ url_for('team_view', team_id=team.id) }}" 
+                   class="list-group-item list-group-item-action {% if selected_team and selected_team.id == team.id %}active{% endif %}">
+                    {{ team.name }}
+                </a>
+                {% endfor %}
+                
+                {% if not teams %}
+                <div class="list-group-item text-center text-muted py-4">
+                    <i class="fas fa-users mb-2 fa-2x"></i>
+                    <p class="mb-0">No teams available</p>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-9">
+        {% if selected_team %}
+        <div class="card shadow-sm mb-4">
+            <div class="card-header bg-white">
+                <div class="d-flex justify-content-between align-items-center">
+                    <h5 class="mb-0">{{ selected_team.name }}</h5>
+                    {% if current_user.is_team_leader and selected_team.get_leader() and selected_team.get_leader().id == current_user.id %}
+                    <a href="{{ url_for('edit_team', id=selected_team.id) }}" class="btn btn-sm btn-outline-primary">
+                        <i class="fas fa-edit me-1"></i> Edit Team
+                    </a>
+                    {% endif %}
+                </div>
+            </div>
+            <div class="card-body">
+                <p>{{ selected_team.description }}</p>
+                
+                <h6 class="mt-4 mb-3">Team Members</h6>
+                <div class="team-members">
+                    {% for member in selected_team.members %}
+                    <div class="team-member {% if selected_team.get_leader() and member.id == selected_team.get_leader().id %}team-leader{% endif %}">
+                        <div class="rounded-circle text-center text-white bg-primary" style="width: 24px; height: 24px; line-height: 24px; font-size: 12px;">
+                            {{ member.username[0].upper() }}
+                        </div>
+                        <span>{{ member.full_name or member.username }}</span>
+                        {% if selected_team.get_leader() and member.id == selected_team.get_leader().id %}
+                        <span class="badge bg-primary ms-1">Leader</span>
+                        {% endif %}
+                    </div>
+                    {% endfor %}
+                </div>
+                
+                <h6 class="mt-4 mb-3">Department</h6>
+                <p>{{ selected_team.department.name if selected_team.department else 'No department' }}</p>
+            </div>
+        </div>
+        
+        <div class="card shadow-sm mb-4">
+            <div class="card-header bg-white">
+                <div class="d-flex justify-content-between align-items-center">
+                    <h5 class="mb-0">Health Check History</h5>
+                    {% if current_user.is_team_leader and selected_team.get_leader() and selected_team.get_leader().id == current_user.id %}
+                    <a href="{{ url_for('create_health_check') }}" class="btn btn-sm btn-primary">
+                        <i class="fas fa-plus me-1"></i> New Health Check
+                    </a>
+                    {% endif %}
+                </div>
+            </div>
+            <div class="card-body">
+                {% if health_checks %}
+                <div class="table-responsive">
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th>Health Check</th>
+                                <th>Period</th>
+                                <th>Status</th>
+                                <th>Completion</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for session in health_checks %}
+                            <tr>
+                                <td>{{ session.health_check.name }}</td>
+                                <td>{{ session.start_date.strftime('%b %d') }} - {{ session.end_date.strftime('%b %d, %Y') }}</td>
+                                <td>
+                                    {% if session.end_date is date_lt(now()) %}
+                                    <span class="badge bg-secondary">Completed</span>
+                                    {% else %}
+                                    <span class="badge bg-success">Active</span>
+                                    {% endif %}
+                                </td>
+                                <td>
+                                    <div class="progress" style="height: 6px; width: 100px;">
+                                        <div class="progress-bar" role="progressbar" style="width: {{ session.get_completion_percentage() }}%"></div>
+                                    </div>
+                                    <small class="text-muted">{{ session.get_completion_percentage() }}%</small>
+                                </td>
+                                <td>
+                                    <div class="btn-group">
+                                        {% if current_user in session.participants and session.end_date is date_ge(now()) %}
+                                        <a href="{{ url_for('vote_health_check', id=session.id) }}" class="btn btn-sm btn-primary">Vote</a>
+                                        {% endif %}
+                                        <a href="{{ url_for('view_health_check', id=session.id) }}" class="btn btn-sm btn-outline-secondary">View</a>
+                                    </div>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+                {% else %}
+                <div class="text-center text-muted py-5">
+                    <i class="fas fa-clipboard-check mb-2 fa-3x"></i>
+                    <p class="mb-0">No health checks for this team yet</p>
+                    {% if current_user.is_team_leader and selected_team.get_leader() and selected_team.get_leader().id == current_user.id %}
+                    <a href="{{ url_for('create_health_check') }}" class="btn btn-primary mt-3">Create Health Check</a>
+                    {% endif %}
+                </div>
+                {% endif %}
+            </div>
+        </div>
+        
+        <div class="card shadow-sm">
+            <div class="card-header bg-white">
+                <h5 class="mb-0">Health Trend</h5>
+            </div>
+            <div class="card-body">
+                <div style="height: 300px;">
+                    <canvas id="health-trend-chart"></canvas>
+                </div>
+            </div>
+        </div>
+        {% else %}
+        <div class="text-center text-muted py-5">
+            <i class="fas fa-users mb-2 fa-3x"></i>
+            <p class="mb-3">Select a team from the list to view details</p>
+            {% if teams|length == 0 and current_user.is_team_leader %}
+            <a href="{{ url_for('create_team') }}" class="btn btn-primary">Create New Team</a>
+            {% endif %}
+        </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script src="{{ url_for('static', filename='js/charts.js') }}"></script>
+{% endblock %}
+

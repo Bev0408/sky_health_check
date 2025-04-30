@@ -1,0 +1,265 @@
+{% extends "base.html" %}
+
+{% block title %}SKY Health - Health Checks{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h1 class="h3 mb-0">Health Checks</h1>
+    {% if current_user.is_team_leader %}
+    <a href="{{ url_for('create_health_check') }}" class="btn btn-primary">
+        <i class="fas fa-plus me-1"></i> Create Health Check
+    </a>
+    {% endif %}
+</div>
+
+<div class="card shadow-sm">
+    <div class="card-header bg-white">
+        <ul class="nav nav-tabs card-header-tabs">
+            <li class="nav-item">
+                <a class="nav-link active" href="#active" data-bs-toggle="tab">Active</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="#past" data-bs-toggle="tab">Past</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="#upcoming" data-bs-toggle="tab">Upcoming</a>
+            </li>
+        </ul>
+    </div>
+    <div class="card-body">
+        <div class="tab-content">
+            <div class="tab-pane fade show active" id="active">
+                {% set active_sessions = sessions|selectattr('end_date', 'date_ge', now())|selectattr('start_date', 'date_le', now())|list %}
+                {% if active_sessions %}
+                <div class="row">
+                    {% for session in active_sessions %}
+                    <div class="col-md-6 mb-4">
+                        <div class="health-check-card">
+                            <div class="health-check-card-header">
+                                <div class="health-check-category">{{ session.team.name }}</div>
+                                <h3 class="health-check-title">{{ session.health_check.name }}</h3>
+                                <p class="health-check-description">{{ session.health_check.description }}</p>
+                            </div>
+                            
+                            {% set completion = session.get_completion_percentage() %}
+                            
+                            <div class="health-check-card-body">
+                                <div class="mb-3">
+                                    <div class="d-flex justify-content-between align-items-center mb-2">
+                                        <div class="small text-muted">Completion</div>
+                                        <div class="small">{{ completion }}%</div>
+                                    </div>
+                                    <div class="progress" style="height: 6px;">
+                                        <div class="progress-bar" role="progressbar" style="width: {{ completion }}%"></div>
+                                    </div>
+                                </div>
+                                
+                                <div class="d-flex justify-content-between text-muted small mb-3">
+                                    <div>
+                                        <i class="fas fa-calendar-alt me-1"></i>
+                                        <span>{{ session.start_date.strftime('%b %d') }} - {{ session.end_date.strftime('%b %d, %Y') }}</span>
+                                    </div>
+                                    <div>
+                                        <i class="fas fa-users me-1"></i>
+                                        <span>{{ session.participants|length }} participants</span>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="health-check-card-footer">
+                                <div class="d-flex gap-2">
+                                    {% set user_voted = session.responses|selectattr('user_id', 'eq', current_user.id)|list|length > 0 %}
+                                    
+                                    {% if current_user in session.participants %}
+                                        {% if user_voted %}
+                                        <span class="badge bg-success">
+                                            <i class="fas fa-check me-1"></i> Completed
+                                        </span>
+                                        {% else %}
+                                        <span class="badge bg-warning">
+                                            <i class="fas fa-hourglass-half me-1"></i> Pending
+                                        </span>
+                                        {% endif %}
+                                    {% endif %}
+                                </div>
+                                
+                                <div>
+                                    {% if current_user in session.participants and not user_voted %}
+                                    <a href="{{ url_for('vote_health_check', id=session.id) }}" class="btn btn-sm btn-primary">
+                                        Vote
+                                    </a>
+                                    {% endif %}
+                                    <a href="{{ url_for('view_health_check', id=session.id) }}" class="btn btn-sm btn-outline-secondary">
+                                        View Details
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+                {% else %}
+                <div class="text-center text-muted py-5">
+                    <i class="fas fa-clipboard-check mb-2 fa-3x"></i>
+                    <p class="mb-3">No active health checks</p>
+                    {% if current_user.is_team_leader %}
+                    <a href="{{ url_for('create_health_check') }}" class="btn btn-primary">Create Health Check</a>
+                    {% endif %}
+                </div>
+                {% endif %}
+            </div>
+            
+            <div class="tab-pane fade" id="past">
+                {% set past_sessions = sessions|selectattr('end_date', 'date_lt', now())|list %}
+                {% if past_sessions %}
+                <div class="table-responsive">
+                    <table class="table table-hover">
+                        <thead>
+                            <tr>
+                                <th>Health Check</th>
+                                <th>Team</th>
+                                <th>Period</th>
+                                <th>Completion</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for session in past_sessions %}
+                            <tr>
+                                <td>{{ session.health_check.name }}</td>
+                                <td>{{ session.team.name }}</td>
+                                <td>{{ session.start_date.strftime('%b %d') }} - {{ session.end_date.strftime('%b %d, %Y') }}</td>
+                                <td>
+                                    <div class="progress" style="height: 6px; width: 100px;">
+                                        <div class="progress-bar" role="progressbar" style="width: {{ session.get_completion_percentage() }}%"></div>
+                                    </div>
+                                    <small class="text-muted">{{ session.get_completion_percentage() }}%</small>
+                                </td>
+                                <td>
+                                    <a href="{{ url_for('view_health_check', id=session.id) }}" class="btn btn-sm btn-outline-secondary">
+                                        View
+                                    </a>
+                                    
+                                    {% if session.team.get_leader() and session.team.get_leader().id == current_user.id %}
+                                    <button type="button" class="btn btn-sm btn-outline-danger" 
+                                            data-bs-toggle="modal" data-bs-target="#deleteModal{{ session.id }}">
+                                        <i class="fas fa-trash"></i>
+                                    </button>
+                                    
+                                    <!-- Delete Confirmation Modal -->
+                                    <div class="modal fade" id="deleteModal{{ session.id }}" tabindex="-1" aria-hidden="true">
+                                        <div class="modal-dialog">
+                                            <div class="modal-content">
+                                                <div class="modal-header">
+                                                    <h5 class="modal-title">Confirm Deletion</h5>
+                                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                                </div>
+                                                <div class="modal-body">
+                                                    <p>Are you sure you want to delete the health check <strong>{{ session.health_check.name }}</strong>?</p>
+                                                    <p class="text-danger">This action cannot be undone. All responses will be permanently deleted.</p>
+                                                </div>
+                                                <div class="modal-footer">
+                                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                                                    <form action="{{ url_for('delete_health_check', id=session.id) }}" method="post">
+                                                        <button type="submit" class="btn btn-danger">Delete</button>
+                                                    </form>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    {% endif %}
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+                {% else %}
+                <div class="text-center text-muted py-5">
+                    <p class="mb-0">No past health checks</p>
+                </div>
+                {% endif %}
+            </div>
+            
+            <div class="tab-pane fade" id="upcoming">
+                {% set upcoming_sessions = sessions|selectattr('start_date', 'date_gt', now())|list %}
+                {% if upcoming_sessions %}
+                <div class="row">
+                    {% for session in upcoming_sessions %}
+                    <div class="col-md-6 mb-4">
+                        <div class="health-check-card">
+                            <div class="health-check-card-header">
+                                <div class="health-check-category">{{ session.team.name }}</div>
+                                <h3 class="health-check-title">{{ session.health_check.name }}</h3>
+                                <p class="health-check-description">{{ session.health_check.description }}</p>
+                            </div>
+                            
+                            <div class="health-check-card-body">
+                                <div class="d-flex justify-content-between text-muted small mb-3">
+                                    <div>
+                                        <i class="fas fa-calendar-alt me-1"></i>
+                                        <span>Starts {{ session.start_date.strftime('%b %d, %Y') }}</span>
+                                    </div>
+                                    <div>
+                                        <i class="fas fa-users me-1"></i>
+                                        <span>{{ session.participants|length }} participants</span>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="health-check-card-footer">
+                                <div>
+                                    <span class="badge bg-info">
+                                        <i class="fas fa-clock me-1"></i> Upcoming
+                                    </span>
+                                </div>
+                                
+                                <div>
+                                    <a href="{{ url_for('view_health_check', id=session.id) }}" class="btn btn-sm btn-outline-secondary">
+                                        View Details
+                                    </a>
+                                    
+                                    {% if session.team.get_leader() and session.team.get_leader().id == current_user.id %}
+                                    <button type="button" class="btn btn-sm btn-outline-danger" 
+                                            data-bs-toggle="modal" data-bs-target="#deleteModal{{ session.id }}">
+                                        <i class="fas fa-trash"></i>
+                                    </button>
+                                    
+                                    <!-- Delete Confirmation Modal -->
+                                    <div class="modal fade" id="deleteModal{{ session.id }}" tabindex="-1" aria-hidden="true">
+                                        <div class="modal-dialog">
+                                            <div class="modal-content">
+                                                <div class="modal-header">
+                                                    <h5 class="modal-title">Confirm Deletion</h5>
+                                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                                </div>
+                                                <div class="modal-body">
+                                                    <p>Are you sure you want to delete the health check <strong>{{ session.health_check.name }}</strong>?</p>
+                                                    <p class="text-danger">This action cannot be undone.</p>
+                                                </div>
+                                                <div class="modal-footer">
+                                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                                                    <form action="{{ url_for('delete_health_check', id=session.id) }}" method="post">
+                                                        <button type="submit" class="btn btn-danger">Delete</button>
+                                                    </form>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+                {% else %}
+                <div class="text-center text-muted py-5">
+                    <p class="mb-0">No upcoming health checks</p>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

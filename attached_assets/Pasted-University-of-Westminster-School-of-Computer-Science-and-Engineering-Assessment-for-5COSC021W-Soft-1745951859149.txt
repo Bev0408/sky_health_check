@@ -1,0 +1,407 @@
+University of Westminster – School of Computer Science and Engineering
+Assessment for 5COSC021W Software Development Group Project (subject to External Examiner’s approval)
+Project Brief
+In this coursework, your team will be working on a software application development project regarding the development of a web-based application, for recording and
+visualising the operations of software product development, using the “Health Check” technique devised by Spotify.
+• The client of the project is SKY’s Engineering Department. SKY Engineering Department routinely assesses the health of engineering teams using a “Health Check”
+technique, developed by Henrick Kniberg at Spotify. Engineering teams discuss and rate the health of critical areas in the team’s operations (Codebase Health, Testing,
+Release Processes, Stakeholder Relationships, etc.).
+• Currently they use a spreadsheet to record and present this data to senior directors of the organisation.
+• Challenges include – its laborious to refresh the spreadsheet, its prone to data entry error, and being a single file can be lost or wrong versions accessed.
+• SKY have asked 5BUIS021W teams to provide front-end prototypes of a web application (i.e. web app) for the “Health Check” technique for mobile phones or desktop.
+We will show you examples of the 5BUIS021W teams to inform your design. However, the designs for 5COSC021W should meet the functional requirements below
+and should not be a copy of any particular 5BUIS021W design.
+• SKY is now asking 5COSC21W teams to review and improve these front-end prototypes in a second iteration, and provide a full-stack prototype using Django, based
+on the functional requirements of the “Health Check” technique.
+• The functional requirements of the “Health Check” technique are given in the application brief section of this document.
+• Please also check the following link to find out more information about “Squad Health Check” by Spotify.
+https://engineering.atspotify.com/2014/09/squad-health-check-model/
+You will have the opportunity to meet the representatives of the client in designated classes to clarify any questions or gaps. industry mentors to discuss with you issues related to group work, industry practices and provide feedback on your work/working practice.
+We have also organised meetings with
+5COSC021W/ Schedule and assessment document updated by Aleka Psarrou 2017-25, page 1
+Project Support Structure
+Project Manager aka Module Leader:
+Strategic planning, support and guidance for the client and support for the tutors.
+Aleka Psarrou
+Client manager / representative:
+To provide requirements and clarify any questions.
+They will join the module at designated times. You will be informed of the timings.
+SKY Engineering Team
+Senior Managers / Mentors aka Tutors:
+Weekly support and guidance for project teams (that’s you), solve (rarely) team issues.
+Evaluation / appraisals of project teams, the work the teams and their members produce and their professional
+conduct.
+Aleka Psarrou, Barbara Villarini, Kumudini
+Sarathchandra, Deepika, Francesco Tusa, Simon
+Project teams aka you in groups:
+Team members will create project plan together, provide peer -review on each other’s work, test each other’s work,
+point out flaws that need fixing.
+Courtenage, Mohammad Shah, Qasin Abbas, Mark
+Roberts, Natalia Yerashenia, David Huang
+Project team member aka each of you:
+Each of you will work as part of a team but you will have both group and individual tasks to do that contributes to the
+overall project. The allocation of tasks in each team member is decided by the team. Collectively as a team you will:
+• model the data (including users) using logical diagrams
+• design the use cases and test plans for your use cases
+• design relational database structures that suit the specific problem and functionality required
+• design and develop a web-based front-end to meet the requirements of the project, design the user flow
+• develop appropriate back-end functionalities, using appropriate programming or query languages, to handle
+the functional requirements of the application
+5COSC021W
+students
+5COSC021W/ Schedule and assessment document updated by Aleka Psarrou 2017-25, page 2
+Application brief – Web application “Health Check” Technique
+You are designing a web application for the “Health Check” Technique used by Sky. Below is a list of functional and non-functional requirements:
+Functional Requirements
+The System - summary
+• Should include functionalities for both user and admin. There is a Django Admin so that will be the Administrator
+• Should allow for the self-registration of users
+• Should specify sessions/dates that users can access to record their progress
+• Should be able to store/access records for all users/teams and all sessions and display results as required
+• Implement at least ten health cards (this is primarily to think how they are placed in the UI)
+• Each team should have at least 5 engineers (this is primarily to think how to summarise votes)
+• Each Department should have at least 3 teams
+• Should have at least two Departments
+• Plan adequate testing scenarios to test the user requirements below.
+Users (Engineers)
+• Users must be able to self-register for an account (registration using local account, no registration using Google ID etc)
+• Users must be able to securely log in to access the system, update profile , change password if required, logout
+• User profiles should include: name, username, email address, password
+• User should have the ability to:
+o Choose a session to record “health check”
+o Select team to vote for
+o Vote for each “Health Check” card, and save/change their vote. Voting should be using “traffic light” coding – green, amber, red
+o Note whether progress is getting better or not, and save/change their opinion
+o View summary of their Team for each/all cards
+o View progress over a selected period for a card based on their own vote or that of the team
+Users (Team Leaders)
+• Team leaders must have their own sign area with secure log-in, they can self-register
+• Team leaders should have the same base functionalities as engineers above, including voting
+• Team leaders should be able to choose Team and Cards to View
+• Team leaders should be able to view all Teams in the Department and cards or select Teams and Cards to View
+5COSC021W/ Schedule and assessment document updated by Aleka Psarrou 2017-25, page 3
+• Team leaders should be able to see progress over a selected period for a card per team
+• Team leaders should not be able to see the voting of each engineer only team summaries
+Users (Department Leaders)
+• Department leaders must have their own sign area with secure log-in, they can self-register
+• Department Leaders do not vote.
+• Department Leaders do not have access to engineer’s individual votes
+• Department leaders should be able to view all Teams and cards in their Department.
+• Department leaders should be able to see progress over a selected period for a card per team or summary of their department
+• Department leaders should be able to see summaries for other Departments, not individual teams.
+Users (Senior managers)
+• Senior Manager must have their own sign area with secure log-in, they can self-register
+• Senior Manager do not vote. Do not have access to engineers’ individual vote
+• Senior managers should be able to see all Teams and Department in summary or team details (not engineer) as they wish, and progress over time as they wish
+Administrator (Django admin)
+• Admin should be able to add/delete Teams/Departments
+• Should be able to add/delete users (Engineers, Team Leaders, Department Leaders, and Senior Managers)
+• Should be able to add/delete cards/sessions.
+Non-functional requirements
+• System must be built using Django, Python for backend
+• System should store data in DBMS (SQLite)
+• Advice to use Js and bootstrap for front-end
+• The user interface should be user-friendly, intuitive and can be learned quickly by all users
+5COSC021W/ Schedule and assessment document updated by Aleka Psarrou 2017-25, page 4
+Coursework tasks:
+Your work will be assessed in coursework 1 (design) and coursework 2 (implementation). The courseworks include both group and individual tasks.
+Group tasks: As a team you are responsible for the design of the application and the implementation of the data structures/database to store the application data
+identified. The parts developed individually (see individual tasks below) should be able to link to create a complete application. As a team you are responsible to connect all
+the individual front-end and back-end systems to display the results to the user as one. There are also group report writing tasks. All members of the group are responsible
+for all group elements, however, you can allocate and split leading the GROUP work as you see fit, between yourselves. However, all group members are expected to either
+actively review or provide feedback to the group work. Students that don’t participate to a part of the group work will not get marks for that part.
+Individual tasks: In addition to the group tasks above, each member of the team needs to individually implement one or more functionalities of the application, typically by
+creating its own web-pages (apps) and link it to the database. This allocation will be discussed and proposed by each team but agreed by the tutor at the end of cwk1.
+Suggestions include but are not limited to: 1) registration/ login/ addition/deletion / changes of teams/ profile changes of users/ landing page to select sessions presenting
+different view whether team members, team leader (can see team info not individual), department leads, senior managers 2) individual user voting/progress noting for
+each card (for a specific session)/ storing information in database, 3) visualisation of voting / progress for each user/selection of session(s), 4) collating votes/progress and
+visualising for teams/session selection, 5) collating votes/progress and visualising for teams manager by selecting sessions and teams.
+Please note: The framework to be used is Django, with SQLite. The web application is for laptop, not mobile phones/mobile devices.
+Working in a group
+Everyone in the same team will be using the same data accessed through a commonly designed database. Talking to each other is encouraged. Checking each other’s work
+and providing feedback to each other is part of the coursework itself: it is something you will be expected to do. However, doing each other’s individual work is not allowed;
+it will be against university regulations and appropriate penalties will follow. As you need to do collaborative software development you would need to agree on interfaces
+between structures.
+During the duration of the coursework you will need to comment on each other’s work. These comments will have to be recorded on-line on one or more of the following
+platforms: on the Trello board you share with your team where you can comment on activities (essential), and in any other communication tool that your team may be
+using (eg WhatsApp, Discord, Slack etc). You will also need to take on board the comments of your team-mates on your own work and specify how you used them. You
+need to keep all the communication between the team members. You will be required to submit some of this as evidence of collaboration in your coursework submission.
+In addition, your tutor/module leader may request additional evidence in case of a dispute between members of a team.
+Submission of coursework
+See detailed Coursework 1 and Coursework 2 briefs below.
+5COSC021W/ Schedule and assessment document updated by Aleka Psarrou 2017-25, page 5
+Coursework 1 Software/System Design
+Coursework 1 administration
+Module Leader Aleka Psarrou
+Unit Coursework 1
+Weighting 40%
+Qualifying Mark 30%
+Description Group coursework (70% Team, 30% Individual)
+Learning Outcomes
+Covered in this
+Assignment
+LO1 gain practical experience of software project management throughout the software lifecycle with analysis of a problem domain
+towards a solution that can be demonstrated to be ready for beta-testing;
+LO3 be able to design/apply appropriate testing methods and tools to evaluate software performance;
+LO4 gain practical experience of working as a member of a software development project team demonstrating collegiality and
+professional standards of conduct in communication, time management, project documentation and version control;
+Available on Blackboard Monday, 20 January 2025
+Due date Wednesday, 5th March 2025, 1pm – Each student should submit BOTH the group and his/her individual templates (TWO documents).
+Start thinking about it Now
+Expected Deliverables No later than the due date and preferably a few days earlier each student needs to upload on Blackboard both the group and individual
+templates that include the following tasks:
+• The logical model representing the data in the problem domain (user data and application)
+• Draft data structure based on SQLite
+• The use cases of the functional requirements given by the client
+• Low fidelity UI designs and storyboards of the application based on functional requirements
+• High fidelity samples for CSS use, voting for each card, selecting sessions/teams by senior engineers
+• Your proposed test plan for each of the use cases
+• The comments you received from your team-mates about your application and how you dealt with them
+• The comments you have given your team-mates about their applications
+• Your record of engagement with the module demonstrating time management and version control
+Added regularly on your Trello project management sites:
+• Minutes of meetings and agreements
+• On-line discussions
+• Research links
+On week 8 (during your tutorial or as arranged by tutors):
+5COSC021W/ Schedule and assessment document updated by Aleka Psarrou 2017-25, page 6
+Method of Submission Feedback before
+submission
+Feedback after
+submission
+BCS Criteria covered in
+this Assignment:
+Assessment Regulations • Assessed presentation [All team members must be present. Any team member that is not present will receive a maximum mark
+of 30%. Submission of MCs is required if you cannot present on that day]
+Students in a group need to work together and submit the same group template. Any students that don’t work with the group and
+submit group template that is different from that submitted by the rest of the group will have their mark capped to 30%. Any disputes
+that may result of any group members submitting different group templates need to be brought to the attention of the tutor early in
+order to be resolved. Students need to provide clear reasons of the dispute supported by evidence together with attempts by the
+students to resolve the dispute.
+Online via Blackboard. Instructions will be on Blackboard well before the deadline. Failure to not submit group or individual template will be
+seen as no submission of that component.
+During tutorials from tutors (verbal), mentors (week 5) and from team-mates (peer feedback, verbal and online)
+• Feedback from tutors (verbal)
+• Written feedback and marks 15 working days (3 weeks) after the submission deadline. All marks will remain provisional until formally
+agreed by an Assessment Board.
+2.1.1 Knowledge and understanding of facts, concepts, principles & theories
+2.1.2 Use of such knowledge in modelling and design
+2.1.3 Problem solving strategies
+2.1.6 Recognise legal, social, ethical & professional issues
+2.1.8 Knowledge of management techniques to achieve objectives
+2.1.9 Knowledge of information security issues
+2.2.1 Specify, design or construct computer-based systems
+2.3.1 Work as a member of a development team
+2.3.2 Development of general transferable skills
+3.1.2 Methods, techniques and tools for information modelling, management and security
+3.2.2 Defining problems, managing design process and evaluating outcomes
+3.2.3 System Design
+See last section of this document on regulations
+5COSC021W/ Schedule and assessment document updated by Aleka Psarrou 2017-25, page 7
+Coursework 1 – tasks and marking scheme
+The Coursework will be marked based on the following marking criteria:
+Criteria Marks per
+component1
+Marks
+provided
+Comments
+Submitted in CWK1 GROUP template (70/100)
+Logical ERD & Database structure
+Accuracy and completeness of model - should include both data and users (it should
+not have mistakes; it should not have missed data) (LO1)
+15
+Database structure 10
+User Interaction Design
+Low fidelity plans (LO1) and storyboard 15
+High fidelity samples for CSS use (i.e so that you can identify what information will be
+in a CSS file, no coding required at this stage), voting for each card, selecting
+sessions/teams by senior engineers
+10
+UML diagrams (LO1)
+Use case diagram(s) for all functional requirements identified by client 10
+Use case test plans (LO3)
+Test plans for use cases 10
+Submitted in CWK1 INDIVIDUAL template (30/100)
+Professional conduct – Communication (LO4)
+How you engaged with your team mates to get their comments on your work and how
+you dealt with their comments professionally 10
+The comments you have given your team mates (including your justification for each)
+Time management and project management (LO4)
+Your reflection on the time management process for coursework 1, discussing both
+good examples and areas for improvement
+10
+Your reflection on the group’s project management discussing both good examples
+and areas for improvement
+10
+5COSC021W/ Schedule and assessment document updated by Aleka Psarrou 2017-25, page 8
+Total 100
+Coursework 2 Project Implementation
+Coursework 2 administration
+Module Leader Aleka Psarrou
+Unit Coursework 2
+Weighting 60%
+Qualifying Mark 30%
+Description Group work – (60% Individual, 40% Team)
+Learning Outcomes
+Covered in this
+Assignment
+LO2 integrate.
+LO3 LO5 LO6 following distinct software development phases and considering and applying HCI principles, produce code that is clear and easy to
+be able to apply appropriate testing methods and tools to evaluate software performance;
+evaluate security risks and demonstrate how computer security decisions affect software development.
+be aware of ethical and legal considerations of a software project, including issues of intellectual property and data protection
+Available on Blackboard Monday, 20 January 2025
+Due date Thursday 1 May 2025, 1pm – each student should submit code and both group and his/her individual templates - groups should also
+provide a link on the submission to a video where their work is described
+Start thinking about it Now
+Expected Deliverables No later than the due date and preferably a few days earlier upload on Blackboard:
+• The code – upload all files required (incl databases) so that your code can run when uploaded as Django project
+• the coursework 2 group and individual templates that include:
+o Discussion on the code you have implemented and quality of your code
+o Discussion on how individual parts were integrated to produce a single application
+o Discussion on how you used version control and ensured compatibility between work of group members
+o The output of the test plan for your individual work and the overall application
+o Discussion on the main UI/UX principles you applied in your implementation.
+o Your list of security risks you have addressed (and how you addressed them) and any security risks still remaining
+o Your plan to manage legal and ethical constraints appropriate for the problem domain, supported by appropriate research
+o The comments you received from your team-mates on the quality of your code and documentation and how you dealt with
+them
+o The comments you have given your team-mates on their code and rationale
+o Reflection on discussion with industry mentors and engineers
+o SQLite database(s) for user accounts and data
+• A link to a 5-10 minute video of your group application
+5COSC021W/ Schedule and assessment document updated by Aleka Psarrou 2017-25, page 9
+Method of Submission Feedback before
+submission
+Type of Feedback and due
+date after submission
+BCS Criteria covered in
+this Assignment:
+Assessment Regulations • Added regularly on-line on Trello:
+o Minutes of meetings and agreements
+o On-line discussions
+o Research links
+On date set by your tutor:
+• Assessed group demonstrations [All team members must be present. Any team member that is not present will receive a
+maximum mark of 30%. Submission of MCs is required if you can’t demonstrate your work on that day]
+Students in a group need to work together and submit the same group template. Any students that don’t work with the group and
+submit group template that is different from that submitted by the rest of the group will have their mark capped to 30%. Any disputes
+that may result of any group members submitting different group templates need to be brought to the attention of the tutor early in
+order to be resolved. Students need to provide clear reasons of the dispute supported by evidence together with attempts by the
+students to resolve the dispute.
+Online via Blackboard including a link to the video. All students should submit both group and individual templates and link to the group
+application (or their own part if students did not manage to link their part to the group application). Failure to not submit group or
+individual template will be seen as no submission of that component.
+During tutorials from tutors (verbal) and from class (peer feedback, verbal and online)
+Written feedback and marks 15 working days (3 weeks) after the submission deadline.
+All marks will remain provisional until formally agreed by an Assessment Board.
+2.1.1 Knowledge and understanding of facts, concepts, principles & theories
+2.1.2 Use of such knowledge in modelling and design
+2.1.3 Problem solving strategies
+2.1.5 Deploy theory in design, implementation, and evaluation of systems
+2.1.9 Knowledge of information security issues
+2.2.1 Specify, design or construct computer-based systems
+2.2.2 Evaluate systems in terms of quality and trade-offs
+2.3.1 Work as a member of a development team
+2.3.2 Development of general transferable skills
+3.1.2 Methods, techniques and tools for information modelling, management and security
+3.2.2 Defining problems, managing design process and evaluating outcomes
+3.2.3 System Design
+See last section of this document on regulations
+5COSC021W/ Schedule and assessment document updated by Aleka Psarrou 2017-25, page 10
+Coursework 2 - tasks & marking scheme
+The Coursework will be marked based on the following marking criteria:
+Criteria Mark per
+component2
+Mark
+provided
+Comments
+Submitted in CWK2 INDIVIDUAL template (70/100)
+Code (LO2)
+Code functionality – individual element as agreed and integration to the application 30
+Code quality - maintainability 5
+Code quality – version control 5
+Code quality – output of test plans (LO3) 10
+Professional conduct – communication (LO4)
+The comments you received from your team mates on the quality of your code and
+documentation how you dealt with them 10
+The comments you have given your team mates on their code and documentation
+Your reflection on the mentor and industry input 10
+Submitted in CWK 2 GROUP template (30/100)
+Code (LO2)
+Code functionality - database implementation 5
+Code HCI - Discuss principles of UI/UX in the implementation and any issues of
+consistency across group members’ implementation
+10
+Security risks (LO5)
+Your list of security risks you have addressed (and how you addressed them) and any
+security risks still remaining;
+5
+Professional conduct – Legal and Ethical (LO6)
+Legal constraints and how you will manage them, as appropriate for the problem
+domain, supported by appropriate research 10
+Ethical constraints and how you will manage them, as appropriate for the problem
+domain, supported by appropriate research
+2Do your best in all sections; those who go for the minimum pass mark in each may never survive in industry and may end up unemployed.
+5COSC021W/ Schedule and assessment document updated by Aleka Psarrou 2017-25, page 11
+Total 100
+Coursework tips
+a) In the second year of your degree you should be able to resolve a lot of problems by yourselves. If you do get stuck, look at the later section about ‘managing
+issues’. Don’t go to your tutor for every question you could find the answer yourself; you are preparing to be independent professionals.
+b) Independent professionals who disappear and no one knows what they are doing, are not professionals and sooner or later get fired. Make sure your tutor knows
+what you are doing every week (i.e. attend tutorial slots).
+c) You should manage and complete the work as a team. You will have key points where you will show your work to your team-mates to get their feedback. There are
+more marks for a collegiate, helpful, behaviour to others (without doing their work for them!) There will be marks lost for ignoring your team-mates, working in
+isolation, being late with your work, and so on.
+d) Identifying team issues early and managing them is an important part of the module. Minutes of meetings and agreements must also be updated online regularly
+for your tutor (tutor) to see but also as a record for the team of what you have discussed and agreed.
+Managing issues
+All work, however well planned, can encounter something unexpected. It is important that you see such issues as learning opportunities and that you manage them, from
+beginning to end, professionally.
+To resolve an issue yourself:
+a) Do you have all the information about the problem? If not, try to find out the full story.
+b) Could you do something differently yourself and solve the issue? The success of the project will affect you so it is to your interest to adapt if you can.
+c) If the team needs to do something differently, can you convince the group what to do? How can you convince them that what you want will benefit them?
+Raising a case with your tutor:
+a) b) c) d) Have you exhausted the steps for resolving it yourself?
+Plan ahead what you want to ask and what you want from them (guidance? action? decision?).
+Be respectful of your tutor’s time. Your access to them is during the tutorial slot and – only very exceptionally and if it is urgent – by email.
+Be respectful to your colleagues. All resources are shared and limited, and that includes your manager/tutor. Ensure you are not asking for so much time that
+others will have to get little or nothing. (It’s actually unprofessional.)
+e) Separate private issues (e.g. “I have a doctor’s appointment next week” is something you should ask to discuss privately), from professional issues (“I'm not clear on
+how to do/handle this”).
+f) Most of the times your tutor will not solve your problem but will try instead to help you solve it yourself, so you know how to do this in the future.
+Raising a case with your module leader:
+a) Any communication to the module leader must show that it has exhausted all avenues of resolving the issue yourself or with your tutor.
+5COSC021W/ Schedule and assessment document updated by Aleka Psarrou 2017-25, page 12
+What do you need to do to get a good mark?
+Read this document carefully. Manage your work so that you do, typically, another 10 hours of work per week, outside lectures and tutorials. Go to lectures and go to
+tutorials as you can’t get anywhere else the help and information you need to do well. Seek feedback from your tutor and your teammates. Use that feedback to improve
+your work. Don’t miss what is on blackboard. Log on blackboard blog what you are doing. Polish your work: document well, write clearly, pay attention to the little details.
+Always leave enough time to look at your work again and fix any missed errors.
+What do you need to do to get a bad mark?
+Read this quickly and expect someone else will tell you what you missed. Only do a couple of hours of work a week on this module. Don’t come to lectures expecting that
+you will pick things up from others or from blackboard. Ignore blackboard announcements. Write badly and submit work you did the night before the deadline. Ignore your
+team mates and their feedback – and give them low quality feedback in return. Assume that you can copy from someone else. Assume that the answer can be found on the
+internet (it cannot). Miss tutorials and the opportunity to get useful feedback from your tutor. Leave work for the last minute. Come to the presentation unprepared. Think
+that this is an easy coursework (it is not).
+Managing issues
+All work, however well planned, can encounter something unexpected. It is important that you see such issues as learning opportunities and that you manage them, from
+beginning to end, professionally.
+Regulations
+Assessment regulations
+Refer to part 3 of the Academic Regulations for a clarification of how you are assessed, penalties and late submissions, what constitutes plagiarism, etc.
+Penalty for Late Submission
+If students submit coursework late but within 24 hours of the published deadline, the work will be marked and will have ten percentage points of the overall available
+marks deducted, to a minimum of the pass mark (40% at undergraduate level). If students submit coursework more than 24 hours after the specified deadline, a mark of
+zero will be awarded for the work in question – unless a claim of Mitigating Circumstances has been submitted and accepted as valid.
+For more detailed information regarding University Assessment Regulations, please refer to the following website:
+http://www.westminster.ac.uk/study/current-students/resources/academic-regulations
+Attendance at the time and date of your presentations/demonstrations
+All members of a team should be present and take part at the scheduled group presentations and demonstrations. If any student does not attend, the student’s mark will
+be capped to 30%. If a student can’t attend due to extenuating circumstances he/she needs to submit MCs claim.
+Finally…
+There is nothing saying that you cannot do very well in this module. You all start with an equal chance to do very well, regardless of how you did last year. But how well you
+do is up to you and how professionally you are engaging with all aspects of the module. There is a lot of learning to be done (about 200 hours worth) with very interesting
+stuff directly related to how you survive in your future employment. Take it very seriously, but also try to enjoy it.
+5COSC021W/ Schedule and assessment document updated by Aleka Psarrou 2017-25, page 13

@@ -1,0 +1,185 @@
+{% extends 'base.html' %}
+
+{% block title %}Dashboard - Health Check Application{% endblock %}
+
+{% block content %}
+<div class="row mb-4">
+    <div class="col-md-8">
+        <h1>Welcome, {{ user.full_name|default:user.username }}</h1>
+        <p class="lead">Your team health check dashboard</p>
+    </div>
+    <div class="col-md-4 text-md-end">
+        {% if user.is_admin or user.is_senior_manager or user.is_department_leader or teams_led %}
+        <a href="{% url 'create_session' %}" class="btn btn-primary">
+            <i class="fas fa-plus-circle me-1"></i> Create Health Check
+        </a>
+        {% endif %}
+    </div>
+</div>
+
+<!-- Stats Row -->
+<div class="row mb-4">
+    <div class="col-md-3">
+        <div class="stat-card">
+            <div class="stat-number">{{ teams.count }}</div>
+            <div class="stat-title">Teams</div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="stat-card">
+            <div class="stat-number">{{ active_sessions.count }}</div>
+            <div class="stat-title">Active Health Checks</div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="stat-card">
+            <div class="stat-number">{{ teams_led.count }}</div>
+            <div class="stat-title">Teams Led</div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="stat-card">
+            <div class="stat-number">{{ recent_sessions.count }}</div>
+            <div class="stat-title">Recent Sessions</div>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <!-- Active Sessions -->
+    <div class="col-md-6 mb-4">
+        <div class="card shadow">
+            <div class="card-header d-flex justify-content-between align-items-center">
+                <h5 class="mb-0">
+                    <i class="fas fa-clipboard-check me-2"></i> Active Health Checks
+                </h5>
+                <a href="{% url 'session_list' %}" class="btn btn-sm btn-outline-primary">
+                    View All
+                </a>
+            </div>
+            <div class="card-body">
+                {% if active_sessions %}
+                <div class="list-group">
+                    {% for session in active_sessions %}
+                    <a href="{% url 'session_detail' pk=session.pk %}" class="list-group-item list-group-item-action">
+                        <div class="d-flex w-100 justify-content-between">
+                            <h6 class="mb-1">{{ session.health_check.name }}</h6>
+                            <small class="text-muted">{{ session.end_date|date:"M d, Y" }}</small>
+                        </div>
+                        <p class="mb-1">Team: {{ session.team.name }}</p>
+                        <div class="progress">
+                            <div class="progress-bar" role="progressbar" style="width: {{ session.get_completion_percentage }}%;" 
+                                 aria-valuenow="{{ session.get_completion_percentage }}" aria-valuemin="0" aria-valuemax="100">
+                                {{ session.get_completion_percentage }}%
+                            </div>
+                        </div>
+                    </a>
+                    {% endfor %}
+                </div>
+                {% else %}
+                <p class="text-center text-muted mt-3 mb-3">No active health checks at the moment.</p>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+
+    <!-- Your Teams -->
+    <div class="col-md-6 mb-4">
+        <div class="card shadow">
+            <div class="card-header d-flex justify-content-between align-items-center">
+                <h5 class="mb-0">
+                    <i class="fas fa-users me-2"></i> Your Teams
+                </h5>
+                <a href="{% url 'team_list' %}" class="btn btn-sm btn-outline-primary">
+                    View All
+                </a>
+            </div>
+            <div class="card-body">
+                {% if teams %}
+                <div class="list-group">
+                    {% for team in teams %}
+                    <a href="{% url 'team_detail' pk=team.pk %}" class="list-group-item list-group-item-action">
+                        <div class="d-flex w-100 justify-content-between">
+                            <h6 class="mb-1">{{ team.name }}</h6>
+                            {% if team in teams_led %}
+                            <span class="badge bg-primary">Team Leader</span>
+                            {% endif %}
+                        </div>
+                        <p class="mb-1">Department: {{ team.department.name }}</p>
+                        <small class="text-muted">{{ team.members.count }} member{{ team.members.count|pluralize }}</small>
+                    </a>
+                    {% endfor %}
+                </div>
+                {% else %}
+                <p class="text-center text-muted mt-3 mb-3">You are not a member of any team yet.</p>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+
+    <!-- Recent Sessions -->
+    <div class="col-md-12 mb-4">
+        <div class="card shadow">
+            <div class="card-header">
+                <h5 class="mb-0">
+                    <i class="fas fa-history me-2"></i> Recent Health Check Sessions
+                </h5>
+            </div>
+            <div class="card-body">
+                {% if recent_sessions %}
+                <div class="table-responsive">
+                    <table class="table table-hover table-healthcheck">
+                        <thead>
+                            <tr>
+                                <th>Health Check</th>
+                                <th>Team</th>
+                                <th>Date Range</th>
+                                <th>Status</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for session in recent_sessions %}
+                            <tr>
+                                <td>{{ session.health_check.name }}</td>
+                                <td>{{ session.team.name }}</td>
+                                <td>{{ session.start_date|date:"M d" }} - {{ session.end_date|date:"M d, Y" }}</td>
+                                <td>
+                                    {% if session.start_date <= now and session.end_date >= now %}
+                                    <span class="badge bg-success">Active</span>
+                                    {% elif session.start_date > now %}
+                                    <span class="badge bg-warning">Upcoming</span>
+                                    {% else %}
+                                    <span class="badge bg-secondary">Completed</span>
+                                    {% endif %}
+                                </td>
+                                <td>
+                                    <a href="{% url 'session_detail' pk=session.pk %}" class="btn btn-sm btn-outline-primary">
+                                        <i class="fas fa-eye"></i> View
+                                    </a>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+                {% else %}
+                <p class="text-center text-muted mt-3 mb-3">No recent health check sessions found.</p>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    // Set active navigation link
+    document.addEventListener('DOMContentLoaded', function() {
+        const dashboardLink = document.querySelector('a[href="{% url "dashboard" %}"]');
+        if (dashboardLink) {
+            dashboardLink.classList.add('active');
+        }
+    });
+</script>
+{% endblock %}

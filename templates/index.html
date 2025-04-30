@@ -1,0 +1,66 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Health Check - Home{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-10 col-lg-8">
+        <div class="card shadow-sm">
+            <div class="card-body text-center p-5">
+                <h1 class="display-4 mb-4">
+                    <i class="fas fa-heartbeat text-primary me-3"></i>Health Check Application
+                </h1>
+                <p class="lead mb-4">
+                    Welcome to the Health Check Application for software teams.
+                    Track your team's health, identify improvement areas, and monitor progress over time.
+                </p>
+                <hr class="my-4">
+                <p class="mb-4">
+                    This application allows teams to perform regular health checks based on
+                    agile and DevOps practices, providing insights into team dynamics,
+                    processes, and technical capabilities.
+                </p>
+                <div class="d-grid gap-2 col-md-6 mx-auto">
+                    <a href="{% url 'login' %}" class="btn btn-primary btn-lg">
+                        <i class="fas fa-sign-in-alt me-2"></i>Log In
+                    </a>
+                    <a href="{% url 'register' %}" class="btn btn-outline-secondary btn-lg">
+                        <i class="fas fa-user-plus me-2"></i>Register
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <div class="row mt-5">
+            <div class="col-md-4">
+                <div class="card h-100 shadow-sm">
+                    <div class="card-body text-center">
+                        <i class="fas fa-chart-line fa-3x text-primary mb-3"></i>
+                        <h3 class="card-title h5">Track Progress</h3>
+                        <p class="card-text">Monitor your team's health metrics over time and visualize improvements.</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card h-100 shadow-sm">
+                    <div class="card-body text-center">
+                        <i class="fas fa-users-cog fa-3x text-primary mb-3"></i>
+                        <h3 class="card-title h5">Team Insights</h3>
+                        <p class="card-text">Gain valuable insights into team dynamics and identify areas for improvement.</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card h-100 shadow-sm">
+                    <div class="card-body text-center">
+                        <i class="fas fa-tasks fa-3x text-primary mb-3"></i>
+                        <h3 class="card-title h5">Action Plans</h3>
+                        <p class="card-text">Create and track action plans to address issues identified in health checks.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

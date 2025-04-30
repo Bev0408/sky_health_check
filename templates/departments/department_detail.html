@@ -1,0 +1,198 @@
+{% extends 'base.html' %}
+
+{% block title %}{{ department.name }} - Department Details{% endblock %}
+
+{% block content %}
+<div class="row mb-4">
+    <div class="col-md-8">
+        <h1>{{ department.name }}</h1>
+        <p class="text-muted">Department details and teams</p>
+    </div>
+    <div class="col-md-4 text-end">
+        <div class="btn-group">
+            {% if perms.departments.change_department or user.is_department_leader or user.is_senior_manager or user.is_admin %}
+            <a href="{% url 'edit_department' department.id %}" class="btn btn-outline-primary">
+                <i class="fas fa-edit me-2"></i> Edit Department
+            </a>
+            {% endif %}
+            
+            {% if perms.teams.add_team or user.is_department_leader or user.is_senior_manager or user.is_admin %}
+            <a href="{% url 'create_team' %}?department={{ department.id }}" class="btn btn-primary">
+                <i class="fas fa-plus me-2"></i> New Team
+            </a>
+            {% endif %}
+        </div>
+    </div>
+</div>
+
+{% if messages %}
+<div class="row">
+    <div class="col-12">
+        {% for message in messages %}
+        <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+            {{ message }}
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+{% endif %}
+
+<div class="row">
+    <div class="col-md-4">
+        <div class="card mb-4">
+            <div class="card-header">
+                <h5 class="mb-0">Department Information</h5>
+            </div>
+            <div class="card-body">
+                <div class="mb-3">
+                    <div class="text-muted mb-1">Created:</div>
+                    <div>{{ department.created_at|date:"F j, Y" }}</div>
+                </div>
+                <div class="mb-3">
+                    <div class="text-muted mb-1">Teams:</div>
+                    <div>{{ department.teams.count }}</div>
+                </div>
+                <div class="mb-3">
+                    <div class="text-muted mb-1">Members:</div>
+                    <div>{{ department.users.count }}</div>
+                </div>
+                <div>
+                    <div class="text-muted mb-1">Description:</div>
+                    <div>{{ department.description|default:"No description provided"|linebreaks }}</div>
+                </div>
+            </div>
+            {% if perms.departments.delete_department or user.is_senior_manager or user.is_admin %}
+            <div class="card-footer">
+                <a href="{% url 'delete_department' department.id %}" class="btn btn-sm btn-outline-danger">
+                    <i class="fas fa-trash-alt me-1"></i> Delete Department
+                </a>
+            </div>
+            {% endif %}
+        </div>
+        
+        <div class="card">
+            <div class="card-header d-flex justify-content-between align-items-center">
+                <h5 class="mb-0">Department Members</h5>
+                <span class="badge bg-primary rounded-pill">{{ department.users.count }}</span>
+            </div>
+            <div class="card-body p-0">
+                <ul class="list-group list-group-flush">
+                    {% for user in department.users.all %}
+                    <li class="list-group-item">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div>
+                                <strong>{{ user.full_name }}</strong>
+                                <div class="text-muted small">{{ user.email }}</div>
+                            </div>
+                            {% if user.is_department_leader %}
+                            <span class="badge bg-primary">Department Leader</span>
+                            {% endif %}
+                        </div>
+                    </li>
+                    {% empty %}
+                    <li class="list-group-item">No members assigned to this department</li>
+                    {% endfor %}
+                </ul>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-8">
+        <div class="card">
+            <div class="card-header d-flex justify-content-between align-items-center">
+                <h5 class="mb-0">Teams</h5>
+                {% if perms.teams.add_team or user.is_department_leader or user.is_senior_manager or user.is_admin %}
+                <a href="{% url 'create_team' %}?department={{ department.id }}" class="btn btn-sm btn-outline-primary">
+                    <i class="fas fa-plus me-1"></i> Add Team
+                </a>
+                {% endif %}
+            </div>
+            <div class="card-body">
+                {% if department.teams.all %}
+                <div class="row">
+                    {% for team in department.teams.all %}
+                    <div class="col-md-6 mb-3">
+                        <div class="card h-100">
+                            <div class="card-header d-flex justify-content-between align-items-center">
+                                <h6 class="mb-0">{{ team.name }}</h6>
+                                <div class="dropdown">
+                                    <button class="btn btn-sm btn-outline-secondary dropdown-toggle" type="button" id="teamDropdown{{ team.id }}" data-bs-toggle="dropdown" aria-expanded="false">
+                                        <i class="fas fa-ellipsis-v"></i>
+                                    </button>
+                                    <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="teamDropdown{{ team.id }}">
+                                        <li><a class="dropdown-item" href="{% url 'team_detail' team.id %}">
+                                            <i class="fas fa-info-circle me-2"></i> View Details
+                                        </a></li>
+                                        {% if perms.teams.change_team or user.id == team.leader.id or user.is_department_leader or user.is_senior_manager or user.is_admin %}
+                                        <li><a class="dropdown-item" href="{% url 'edit_team' team.id %}">
+                                            <i class="fas fa-edit me-2"></i> Edit Team
+                                        </a></li>
+                                        {% endif %}
+                                        {% if perms.health_checks.add_healthchecksession or user.id == team.leader.id or user.is_department_leader or user.is_senior_manager or user.is_admin %}
+                                        <li><a class="dropdown-item" href="{% url 'create_session' %}?team={{ team.id }}">
+                                            <i class="fas fa-heartbeat me-2"></i> New Health Check
+                                        </a></li>
+                                        {% endif %}
+                                    </ul>
+                                </div>
+                            </div>
+                            <div class="card-body">
+                                <div class="mb-2">
+                                    <small class="text-muted d-block">Leader:</small>
+                                    <div>{{ team.leader.full_name|default:"No leader assigned" }}</div>
+                                </div>
+                                <div class="mb-2">
+                                    <small class="text-muted d-block">Members:</small>
+                                    <div>{{ team.members.count }} member{{ team.members.count|pluralize }}</div>
+                                </div>
+                                {% if team.latest_health_check %}
+                                <div>
+                                    <small class="text-muted d-block">Latest Health Check:</small>
+                                    <div class="d-flex align-items-center">
+                                        <span class="me-2">{{ team.latest_health_check.date|date:"M d, Y" }}</span>
+                                        <div class="progress flex-grow-1" style="height: 8px;">
+                                            <div class="progress-bar bg-danger" role="progressbar" 
+                                                style="width: {{ team.latest_health_check.red_percentage }}%;" 
+                                                aria-valuenow="{{ team.latest_health_check.red_percentage }}" 
+                                                aria-valuemin="0" 
+                                                aria-valuemax="100"></div>
+                                            <div class="progress-bar bg-warning" role="progressbar" 
+                                                style="width: {{ team.latest_health_check.yellow_percentage }}%;" 
+                                                aria-valuenow="{{ team.latest_health_check.yellow_percentage }}" 
+                                                aria-valuemin="0" 
+                                                aria-valuemax="100"></div>
+                                            <div class="progress-bar bg-success" role="progressbar" 
+                                                style="width: {{ team.latest_health_check.green_percentage }}%;" 
+                                                aria-valuenow="{{ team.latest_health_check.green_percentage }}" 
+                                                aria-valuemin="0" 
+                                                aria-valuemax="100"></div>
+                                        </div>
+                                    </div>
+                                </div>
+                                {% endif %}
+                            </div>
+                            <div class="card-footer">
+                                <a href="{% url 'team_detail' team.id %}" class="btn btn-sm btn-outline-primary">
+                                    <i class="fas fa-eye me-1"></i> View Team
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+                {% else %}
+                <div class="alert alert-info">
+                    <h5 class="alert-heading">No Teams Yet</h5>
+                    <p class="mb-0">This department doesn't have any teams yet.
+                    {% if perms.teams.add_team or user.is_department_leader or user.is_senior_manager or user.is_admin %}
+                    You can create a new team using the button above.
+                    {% endif %}
+                    </p>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

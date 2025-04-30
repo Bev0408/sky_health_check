@@ -1,0 +1,31 @@
+{% extends 'base.html' %}
+
+{% block title %}Unauthorized Access - Health Check Application{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card shadow-sm">
+                <div class="card-body text-center py-5">
+                    <div class="mb-4">
+                        <i class="fas fa-lock text-danger" style="font-size: 4rem;"></i>
+                    </div>
+                    <h2 class="mb-3">Access Restricted</h2>
+                    <p class="lead mb-4">
+                        You don't have permission to access the analytics dashboard.
+                    </p>
+                    <p class="text-muted mb-4">
+                        Only administrators, senior managers, and department leaders can view analytics data.
+                    </p>
+                    <div>
+                        <a href="{% url 'dashboard' %}" class="btn btn-primary">
+                            <i class="fas fa-arrow-left me-2"></i> Back to Dashboard
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
