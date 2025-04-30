@@ -162,7 +162,7 @@ python manage.py makemigrations
 ```
 
 - **Shell access for testing**
-```bash
+```bash 
 python manage.py shell
 ```
 
